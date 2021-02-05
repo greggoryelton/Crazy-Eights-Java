@@ -12,7 +12,6 @@ public class Card {
     public Card(int s, int v){
         this.suit = s;
         this.value = v;
-
     }
 
     public String toString(){
