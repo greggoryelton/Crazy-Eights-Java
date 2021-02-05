@@ -1,7 +1,6 @@
 public class Card {
     public static char[] suits = {'C', 'D', 'H', 'S'};
     public static String[] values = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
-
     public int suit, value;
 
     public Card(){
@@ -16,7 +15,6 @@ public class Card {
 
     public String toString(){
         return suits[suit] + values[value];
-
     }
 
     public static void main(String[] args) {
@@ -25,9 +23,4 @@ public class Card {
         System.out.println(c.toString());
         System.out.println(c1.toString());
     }
-
-
-
-
-
 }
