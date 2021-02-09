@@ -26,7 +26,7 @@ public class Card {
 
         /*
         This part rigs the deck so that the pickup pile is exactly the same as the test cases for Part 1 Testing
-         */
+        */
 
         //6C
         riggedDeck.add(new Card(0, 5));
@@ -67,8 +67,6 @@ public class Card {
         Collections.shuffle(deck);
 
         return deck;
-
-
     }
 
     public String toString(){
