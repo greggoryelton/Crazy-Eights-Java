@@ -1,5 +1,7 @@
 package game;
 
+import java.util.ArrayList;
+
 public class Card {
     public static char[] suits = {'C', 'D', 'H', 'S'};
     public static String[] values = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
@@ -13,6 +15,11 @@ public class Card {
     public Card(int s, int v){
         this.suit = s;
         this.value = v;
+    }
+
+    public static ArrayList<Card> deck(){
+        int size = 52;
+
     }
 
     public String toString(){
