@@ -10,11 +10,12 @@ import java.util.Scanner;
 //Taken from Professor Jean-Pierre Corriveau's Yahtzee code posted on cuLearn and adapted for this assignment
 
 
-public class Player {
+public class Player implements Serializable {
     public String name;
     int playerID = 0;
     static Client clientConnection;
     public int score=0;
+    private static final long serialVersionUID = 1L;
 
     Game game = new Game();
     Player[] players = new Player[4];
@@ -64,8 +65,29 @@ public class Player {
 
     public void initPlayers(){
         for(int i=0;i<4;i++){
-            players[i] = new Player(" ");
+            players[i] = new Player("");
         }
+    }
+    public void startGame() {
+        // receive players once for names
+        /*
+        players = clientConnection.receivePlayer();
+        while (true) {
+            int round = clientConnection.receiveRoundNo();
+            if (round == -1)
+                break;
+            System.out.println("\n \n \n ********Round Number " + round + "********");
+            int[][] pl = clientConnection.receiveScores();
+            for (int i = 0; i < 3; i++) {
+                players[i].setScoreSheet(pl[i]);
+            }
+            printPlayerScores(players);
+            int[] dieRoll = game.rollDice();
+            clientConnection.sendScores(playRound(dieRoll));
+        }
+
+         */
+
     }
 
 
@@ -76,6 +98,7 @@ public class Player {
 
         public Client() {
 
+
             try {
                 socket = new Socket("localhost", 3333);
                 dOut = new ObjectOutputStream(socket.getOutputStream());
@@ -84,7 +107,9 @@ public class Player {
                 playerID = dIn.readInt();
 
                 System.out.println("Connected as " + playerID);
+               // sendString(players[playerID-1].name);
                 sendPlayer();
+
 
             } catch (IOException ex) {
                 System.out.println("Client failed to open");
@@ -126,6 +151,29 @@ public class Player {
         }
 
     }
+    /*
+    public Player[] receivePlayer() {
+        Player[] pl = new Player[3];
+        try {
+            Player p = (Player) dIn.readObject();
+            pl[0] = p;
+            p = (Player) dIn.readObject();
+            pl[1] = p;
+            p = (Player) dIn.readObject();
+            pl[2] = p;
+            return pl;
+
+        } catch (IOException e) {
+            System.out.println("Score sheet not received");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.out.println("class not found");
+            e.printStackTrace();
+        }
+        return pl;
+    }
+
+     */
 
     public Player(String n){
         name = n;
@@ -142,7 +190,8 @@ public class Player {
         String name = myObj.next();
         Player p = new Player(name);
 
-        //p.initializePlayers();
+
+       // p.initializePlayers();
         p.connectToClient();
         //p.startGame();
         //p.returnWinner();
