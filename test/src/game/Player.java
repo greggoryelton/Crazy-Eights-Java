@@ -131,7 +131,7 @@ public class Player {
         name = n;
         for(int i=0;i< hand.length;i++){
             //Init to be a new card of 1C
-            //hand[i] = new Card(0,0);
+            hand[i] = new Card(0,0);
         }
     }
 
@@ -141,13 +141,11 @@ public class Player {
         System.out.print("What is your name ? ");
         String name = myObj.next();
         Player p = new Player(name);
-        /*
-        p.initializePlayers();
-        p.connectToClient();
-        p.startGame();
-        p.returnWinner();
 
-         */
+        //p.initializePlayers();
+        p.connectToClient();
+        //p.startGame();
+        //p.returnWinner();
         myObj.close();
 
     }
