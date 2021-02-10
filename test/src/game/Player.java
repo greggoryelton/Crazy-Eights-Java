@@ -14,13 +14,27 @@ public class Player {
     public String name;
     int playerID = 0;
     static Client clientConnection;
+    public int score=0;
 
     Game game = new Game();
     Player[] players = new Player[4];
     private Card[] hand = new Card[4];
 
     public Card[] playRound(Card[] deck) {
-        //TO-DO Add game logic
+        /*
+        Playing logic
+        1. Checks cards in hand to see if they can play
+        2. If yes, play card.
+        3. if no, pickup top card on the pile.
+        4. If the pickup card can be played, play it.
+
+       Scoring logic:
+       1. User plays an 8 card, user#.setScore(user#.getScore() += 50)
+       2. User plays a King, Queen or Jack, user#.setScore(user#.getScore() += 10)
+       3. All other cards are their value, user#.setScore(user#.getScore += user#.getHand(i).getValue())
+
+
+         */
 
 
         return deck;
@@ -29,7 +43,13 @@ public class Player {
     public Player getPlayer() {
         return this;
     }
+    public int getScore(){
+        return score;
+    }
+    public void setScore(int s){
+        this.score = s;
 
+    }
     public void sendStringToServer(String str) {
         clientConnection.sendString(str);
     }
@@ -111,7 +131,7 @@ public class Player {
         name = n;
         for(int i=0;i< hand.length;i++){
             //Init to be a new card of 1C
-            hand[i] = new Card(0,0);
+            //hand[i] = new Card(0,0);
         }
     }
 

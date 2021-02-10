@@ -72,15 +72,20 @@ public class Card {
     public String toString(){
         return values[value] + suits[suit];
     }
+    public int getValue(){
+        return Integer.parseInt(values[value]);
+    }
+
+    public char getSuit(){
+        return suits[suit];
+    }
 
     public static void main(String[] args) {
         Card c = new Card();
         Card c1 = new Card(1,2);
 
         ArrayList<Card> d = deck();
-        System.out.println(d.size());
-        for (Card card : d) {
-           System.out.println(card.toString());
-        }
+        System.out.println(c1.getValue());
+        System.out.println(c1.getSuit());
     }
 }
