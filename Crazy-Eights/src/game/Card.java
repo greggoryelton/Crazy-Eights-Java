@@ -3,11 +3,13 @@ package game;
 import java.util.ArrayList;
 import java.util.Collections;
 
+
 public class Card {
     public static char[] suits = {'C', 'D', 'H', 'S'};
     public static String[] values = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
     public int suit, value;
-    ArrayList<Card> GlobalDeck = new ArrayList<>();
+    public static ArrayList<Card> GlobalDeck = new ArrayList<>();
+    ArrayList<Card> hand = new ArrayList<>();
 
     public Card(){
         this.suit = 0;
@@ -65,9 +67,18 @@ public class Card {
                 deck.add(new Card(i,j));
             }
         }
+        GlobalDeck = deck;
+
         Collections.shuffle(deck);
         return deck;
     }
+
+    public ArrayList<Card> init(){
+        GlobalDeck = initDeck();
+        return GlobalDeck;
+    }
+
+
 
     public String toString(){
         return values[value] + suits[suit];

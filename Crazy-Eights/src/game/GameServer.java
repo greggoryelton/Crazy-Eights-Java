@@ -6,7 +6,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
-
+import java.util.ArrayList;
 
 
 //Taken from Professor Jean-Pierre Corriveau's Yahtzee code posted on cuLearn and adapted for this assignment
@@ -18,6 +18,7 @@ public class GameServer implements Serializable {
 
     Server[] playerServer = new Server[4];
     Player[] players = new Player[4];
+    int[] scores;
     ServerSocket ss;
 
     Game game = new Game();
@@ -32,6 +33,8 @@ public class GameServer implements Serializable {
     public GameServer(){
         System.out.println("Starting Crazy-Eights Server...");
         numPlayers = 0;
+        ArrayList<Card> hand = new ArrayList<>();
+
 
         for (int i = 0; i < players.length; i++) {
             players[i] = new Player(" ");
@@ -76,8 +79,66 @@ public class GameServer implements Serializable {
         }
     }
 
-    public void gameLoop(){
+    public void gameLoop() {
+        Boolean flag = false;
         //TO-DO
+        int roundNum = 1;
+        ArrayList<Card> pile = new ArrayList<>();
+        //Remove cards that are in hand from this deck
+        pile = Card.initDeck();
+
+        //if plauers name has -c then
+
+        //creates normal deck
+
+        //ask user for desired hand
+
+        //take those cards out of the deck
+
+
+        try {
+            playerServer[0].sendPlayers(players);
+            playerServer[1].sendPlayers(players);
+            playerServer[2].sendPlayers(players);
+            playerServer[3].sendPlayers(players);
+
+            while(true){
+                //playerServer[0].sendRoundNo(roundNum);
+                //playerServer[0].sendScores(players);
+                playerServer[0].sendString("Your turn");
+                playerServer[1].sendString("Player " + players[0].name + "'s turn");
+                playerServer[2].sendString("Player " + players[0].name + "'s turn");
+                playerServer[3].sendString("Player " + players[0].name + "'s turn");
+                playerServer[0].sendString("Top card in pile is: " + pile.get(0).toString());
+                playerServer[1].sendString("Top card in pile is: " + pile.get(0).toString());
+                playerServer[2].sendString("Top card in pile is: " + pile.get(0).toString());
+                playerServer[3].sendString("Top card in pile is: " + pile.get(0).toString());
+
+
+                //System.out.println("Top card in pile is: " + pile.get(0).toString());
+
+
+                //scores = playerServer[0].receiveScores();
+                break;
+
+
+
+
+
+
+            }
+
+
+        }
+
+
+
+        catch (Exception e){
+            System.out.println("ARGHHH");
+            e.printStackTrace();
+        }
+
+
     }
 
     public class Server implements Runnable {
@@ -121,11 +182,21 @@ public class GameServer implements Serializable {
             }
 
         }
+        public void sendString(String str) {
+            try {
+                dOut.writeUTF(str);
+                dOut.flush();
+            } catch (IOException ex) {
+                System.out.println("String not sent");
+                ex.printStackTrace();
+            }
+        }
+
 
         /*
          * receive scores of other players
          */
-        public void sendTurnNo(int r) {
+        public void sendRoundNo(int r) {
             try {
                 dOut.writeInt(r);
                 dOut.flush();
@@ -155,7 +226,7 @@ public class GameServer implements Serializable {
         /*
          * send scores of other players
          */
-        public void sendScores(Player[] pl) {
+        public void sendScores(int[] pl) {
             /*
             try {
                 for (int i = 0; i < pl.length; i++) {

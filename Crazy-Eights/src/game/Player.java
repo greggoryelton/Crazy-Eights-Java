@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Player implements Serializable {
@@ -24,10 +26,12 @@ public class Player implements Serializable {
 
     Game game = new Game();
     private int[] scoreSheet = new int[15];
+    int roundNum =0;
+    ArrayList<Card> hand = new ArrayList<>();
 
     static Client clientConnection;
 
-    Player[] players = new Player[4];
+    Player[] players = new Player[3];
 //	private ArrayList<String> scoreSheetKey = new ArrayList<String>(Arrays.asList("one", "two", "three", "four", "five",
 //			"six", "3ok", "4ok", "full", "sst", "lst", "yahtzee", "chance", "bonus"));
 
@@ -193,6 +197,7 @@ public class Player implements Serializable {
         }
     }
 
+
     /*
      * update turns
      */
@@ -215,52 +220,32 @@ public class Player implements Serializable {
         }*/
     }
 
-    public void startGame() {
-        /*
+    public void startGame() throws IOException {
         // receive players once for names
         players = clientConnection.receivePlayer();
+
         while (true) {
+            String turn = clientConnection.receiveString();
+            String topCard = clientConnection.receiveString();
+            System.out.println(turn);
+            System.out.println(topCard);
+
             int round = clientConnection.receiveRoundNo();
             if (round == -1)
                 break;
             System.out.println("\n \n \n ********Round Number " + round + "********");
-            int[][] pl = clientConnection.receiveScores();
-            for (int i = 0; i < 3; i++) {
-                players[i].setScoreSheet(pl[i]);
-            }
-            printPlayerScores(players);
-            int[] dieRoll = game.rollDice();
-            clientConnection.sendScores(playRound(dieRoll));
+            //int[][] pl = clientConnection.receiveScores();
+            break;
+
+            //clientConnection.sendScores(playRound(dieRoll));
         }
 
-         */
+
 
     }
 
-    public Player returnWinner() {
-        try {
-            int[][] pl = clientConnection.receiveScores();
-            for (int i = 0; i < 3; i++) {
-                players[i].setScoreSheet(pl[i]);
-            }
-            printPlayerScores(players);
-            Player win = (Player) clientConnection.dIn.readObject();
-            if (playerId == win.playerId) {
-                System.out.println("You win!");
-            } else {
-                System.out.println("The winner is " + win.name);
-            }
 
-            System.out.println("Game over!");
-            return win;
 
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     private class Client {
         Socket socket;
@@ -325,6 +310,17 @@ public class Player implements Serializable {
             }
         }
 
+        public String receiveString() {
+            String s = "";
+            try {
+                return dIn.readUTF();
+            } catch (IOException e){
+                System.out.println("Error");
+            }
+            return s;
+        }
+
+
         /*
          * receive scoresheet
          */
@@ -345,7 +341,7 @@ public class Player implements Serializable {
          * receive scores of other players
          */
         public Player[] receivePlayer() {
-            Player[] pl = new Player[3];
+            Player[] pl = new Player[4];
             try {
                 Player p = (Player) dIn.readObject();
                 pl[0] = p;
@@ -353,6 +349,8 @@ public class Player implements Serializable {
                 pl[1] = p;
                 p = (Player) dIn.readObject();
                 pl[2] = p;
+                p = (Player) dIn.readObject();
+                pl[3] = p;
                 return pl;
 
             } catch (IOException e) {
@@ -390,16 +388,15 @@ public class Player implements Serializable {
          * receive scores of other players
          */
         public int receiveRoundNo() {
+            roundNum++;
             try {
                 return dIn.readInt();
-
-            } catch (IOException e) {
-                System.out.println("Score sheet not received");
+            } catch (Exception e) {
+                System.out.println("Invalid Round Number.");
                 e.printStackTrace();
             }
             return 0;
         }
-
     }
 
     /*
@@ -416,14 +413,26 @@ public class Player implements Serializable {
         }
     }
 
-    public static void main(String args[]) {
+    public Player(String n, ArrayList<Card> h){
+        name = n;
+        hand = h;
+    }
+    public ArrayList<Card> getHand(){
+        return this.hand;
+    }
+
+
+
+
+    public static void main(String args[]) throws IOException {
         Scanner myObj = new Scanner(System.in);
         System.out.print("What is your name ? ");
         String name = myObj.next();
-        Player p = new Player(name);
+        ArrayList<Card> hand = new ArrayList<>();
+        Player p = new Player(name, hand);
         p.initializePlayers();
         p.connectToClient();
-       // p.startGame();
+        p.startGame();
         //p.returnWinner();
         myObj.close();
     }

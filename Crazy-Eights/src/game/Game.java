@@ -5,12 +5,31 @@ package game;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
+
 public class Game implements Serializable {
 
+
     public Game(){
-        //TO-DO
+        ArrayList<Card> d = new ArrayList<>();
+        for(int i=0;i<Card.suits.length;i++){
+            for(int j=0;j<Card.values.length;j++){
+                d.add(new Card(i,j));
+            }
+
+        }
+
 
     }
+
+
+
+
+
+
+
+
+
 
     public Player getWinner(Player[] players){
         Player t = players[1];
