@@ -1,10 +1,12 @@
 package game;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
 
-public class Card {
+
+public class Card implements Serializable {
     public static char[] suits = {'C', 'D', 'H', 'S'};
     public static String[] values = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
     public int suit, value;

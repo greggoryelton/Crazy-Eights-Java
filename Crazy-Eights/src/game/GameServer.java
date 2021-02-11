@@ -45,8 +45,27 @@ public class GameServer implements Serializable {
         } catch (IOException ex) {
             System.out.println("Server Failed to open");
         }
+    }
+
+    public ArrayList<Card> randomizeHand(ArrayList<Card> d){
+        ArrayList<Card> h = new ArrayList<>();
+        int c1,c2,c3,c4,c5;
+        c1 = (int) (Math.random() * ((52)));
+        c2 = (int) (Math.random() * ((52)));
+        c3 = (int) (Math.random() * ((52)));
+        c4 = (int) (Math.random() * ((52)));
+        c5 = (int) (Math.random() * ((52)));
 
 
+
+
+        h.add(0,d.get(c1));
+        h.add(1,d.get(c2));
+        h.add(2,d.get(c3));
+        h.add(3,d.get(c4));
+        h.add(4,d.get(c5));
+
+        return h;
 
 
     }
@@ -84,8 +103,32 @@ public class GameServer implements Serializable {
         //TO-DO
         int roundNum = 1;
         ArrayList<Card> pile = new ArrayList<>();
-        //Remove cards that are in hand from this deck
+        ArrayList<Card> h1;
+        ArrayList<Card> h2;
+        ArrayList<Card> h3;
+        ArrayList<Card> h4;
+
+
+
+
+
+
         pile = Card.initDeck();
+
+
+
+        h1 = randomizeHand(pile);
+        h2 = randomizeHand(pile);
+        h3 = randomizeHand(pile);
+        h4 = randomizeHand(pile);
+        for(int i=0;i<5;i++){
+            System.out.println(h1.get(i).toString());
+            if(h1.get(i) == pile.get(i) || h2.get(i) == pile.get(i) || h3.get(i) == pile.get(i) || h4.get(i) == pile.get(i) ){
+                pile.remove(i);
+            }
+        }
+
+
 
         //if plauers name has -c then
 
@@ -113,6 +156,16 @@ public class GameServer implements Serializable {
                 playerServer[1].sendString("Top card in pile is: " + pile.get(0).toString());
                 playerServer[2].sendString("Top card in pile is: " + pile.get(0).toString());
                 playerServer[3].sendString("Top card in pile is: " + pile.get(0).toString());
+                playerServer[0].sendHand(h1);
+                playerServer[1].sendHand(h2);
+                playerServer[2].sendHand(h3);
+                playerServer[3].sendHand(h4);
+
+
+
+
+
+                //Generate
 
 
                 //System.out.println("Top card in pile is: " + pile.get(0).toString());
@@ -189,6 +242,15 @@ public class GameServer implements Serializable {
             } catch (IOException ex) {
                 System.out.println("String not sent");
                 ex.printStackTrace();
+            }
+        }
+
+        public void sendHand(ArrayList<Card> h){
+            try{
+                dOut.writeObject(h);
+                dOut.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 

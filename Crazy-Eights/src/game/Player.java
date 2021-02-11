@@ -1,9 +1,6 @@
 package game;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -19,6 +16,7 @@ public class Player implements Serializable {
     /**
      *
      */
+
     private static final long serialVersionUID = 1L;
     public String name;
 
@@ -227,8 +225,17 @@ public class Player implements Serializable {
         while (true) {
             String turn = clientConnection.receiveString();
             String topCard = clientConnection.receiveString();
+            ArrayList<Card> h1 = clientConnection.receiveHand();
+
+
+
+
             System.out.println(turn);
             System.out.println(topCard);
+            System.out.println("Your hand is: " + h1.get(0).toString() + ", " + h1.get(1).toString() + ", "+ h1.get(2).toString() + ", "+ h1.get(3).toString() + ", " + h1.get(4).toString());
+
+
+
 
             int round = clientConnection.receiveRoundNo();
             if (round == -1)
@@ -318,6 +325,19 @@ public class Player implements Serializable {
                 System.out.println("Error");
             }
             return s;
+        }
+
+        public ArrayList<Card> receiveHand(){
+            ArrayList<Card> h = new ArrayList<>();
+            try {
+                h = (ArrayList<Card>) dIn.readObject();
+                return h;
+
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            return h;
+
         }
 
 
