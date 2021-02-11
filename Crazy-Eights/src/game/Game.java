@@ -3,7 +3,9 @@ package game;
 //Taken from Professor Jean-Pierre Corriveau's Yahtzee code posted on cuLearn and adapted for this assignment
 
 
-public class Game {
+import java.io.Serializable;
+
+public class Game implements Serializable {
 
     public Game(){
         //TO-DO

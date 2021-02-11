@@ -7,6 +7,7 @@ public class Card {
     public static char[] suits = {'C', 'D', 'H', 'S'};
     public static String[] values = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
     public int suit, value;
+    ArrayList<Card> GlobalDeck = new ArrayList<>();
 
     public Card(){
         this.suit = 0;
@@ -56,16 +57,15 @@ public class Card {
         return riggedDeck;
     }
 
-    public static ArrayList<Card> deck(){
+    public static ArrayList<Card> initDeck(){
+        ArrayList<Card> deck = new ArrayList<>();
         int size = 52;
-        ArrayList<Card> deck = new ArrayList<>(size);
         for(int i=0;i<suits.length;i++){
             for( int j=0;j<values.length;j++){
                 deck.add(new Card(i,j));
             }
         }
         Collections.shuffle(deck);
-
         return deck;
     }
 
@@ -84,8 +84,11 @@ public class Card {
         Card c = new Card();
         Card c1 = new Card(1,2);
 
-        ArrayList<Card> d = deck();
+        ArrayList<Card> d = initDeck();
         System.out.println(c1.getValue());
         System.out.println(c1.getSuit());
+        for(int i=0;i<52; i++){
+            System.out.println(d.get(i).toString());
+        }
     }
 }
