@@ -13,7 +13,7 @@ public class Game implements Serializable {
 
     public int score8s(Card c){
         if(c.getValue() == 8){
-            score = score +50;
+            score = score -50;
             return score;
         }
         return score;
@@ -21,7 +21,7 @@ public class Game implements Serializable {
 
     public int scoreHighCard(Card c){
         if(c.toString().contains("K") || c.toString().contains("Q") || c.toString().contains("J")){
-            score = score + 10;
+            score = score - 10;
             return score;
         }
         return score;
@@ -29,10 +29,15 @@ public class Game implements Serializable {
 
     public int scoreCard(Card c){
         if(c.getValue() >= 1 && c.getValue() <= 10){
-            score = score + c.getValue();
+            score = score - c.getValue();
             return score;
         }
         return score;
+    }
+
+    public int scorePlayedCards(ArrayList<Card> played){
+    return 0;
+
     }
 
 

@@ -26,8 +26,11 @@ public class Player implements Serializable {
     private int[] scoreSheet = new int[15];
     int roundNum =0;
     ArrayList<Card> hand = new ArrayList<>();
+    public Card tCard;
 
     static Client clientConnection;
+
+
 
     Player[] players = new Player[4];
 //	private ArrayList<String> scoreSheetKey = new ArrayList<String>(Arrays.asList("one", "two", "three", "four", "five",
@@ -36,65 +39,45 @@ public class Player implements Serializable {
     /*
      * play a round of the game
      */
-    public int[] playRound(int[] dieRoll) {
-        /*
+    public Card playRound(ArrayList<Card> userHand) {
+
         Scanner myObj = new Scanner(System.in);
         int count = 0; // reroll 3 times
-        int stop = 0;
-
-        game.printDieRoll(dieRoll);
-        while (stop == 0) {
+        int end = 0;
+        //game.printHand(dieRoll);
+        while (end == 0) {
             System.out.println("Select an action: ");
             if (count < 3) {
-                System.out.println("(1) Choose dice number to roll again");
-                System.out.println("(2) Roll all again");
+                System.out.println("(1) Choose a card to play from your hand (ie. 0,1,2,3 or 4)");
+                System.out.println("(2) Draw a new card");
             }
-            System.out.println("(3) Score this round");
 
             int act = myObj.nextInt();
-            if (act == 1 && count < 3) {
-                System.out.println("Select the die to hold (Ones not held get rerolled): (1,2...) ");
-                String[] die = (myObj.next()).replaceAll("\\s", "").split(",");
-
-                dieRoll = game.reRollNotHeld(dieRoll, die);
-                System.out.println("New Roll: ");
-                game.printDieRoll(dieRoll);
-            }
-
-            if (act == 2 && count < 3) {
-                for (int i = 0; i < dieRoll.length; i++) {
-                    dieRoll = game.rerollDice(dieRoll, i);
-
+            if(act == 1 && count < 3){
+                System.out.println("Choose a card to play from 0-4");
+                int c = myObj.nextInt();
+                if((c > 4 || c<0) || (userHand.get(c).getSuit() != tCard.getSuit() && userHand.get(c).getValue() != tCard.getValue())){
+                    System.out.println("Invalid Entry.");
+                    c = myObj.nextInt();
                 }
-                System.out.println("New Roll: ");
-                game.printDieRoll(dieRoll);
-            }
-            count++;
-            if (act == 3) {
-//				set yahtzee bonus if applicable
-                setScoreSheet(13, game.yahtzeeBonus(scoreSheet, dieRoll));
 
-//				get the score for the option requested
-//				check if its been stored already before adding else ask for another number
-                int r = 0;
-                while (r != -1) {
-                    System.out.println("Where do you want to score this round? (1/2/3...)");
-                    r = myObj.nextInt();
-//					add the yahtzee bonus if the roll was yahtzee and yahtzee is full
-                    if (game.isScoreSheetPositionEmpty(scoreSheet, r)) {
-                        setScoreSheet(scoreRound(r, dieRoll));
-                        r = -1;
-                    } else {
-                        System.out.println("The position is filled. Try another number");
-                    }
-                }
-                stop = 1;
+                clientConnection.sendCard(userHand.get(c));
+                System.out.println("Top Card: " + tCard.toString());
+                System.out.println("Success");
+                return userHand.get(c);
             }
+            if(act == 2 && count < 3){
+                System.out.println("Drawing new card...");
+
+            }
+
+            end =1;
+
+
         }
-        return this.scoreSheet;
+        return new Card(-1,-1);
 
-         */
-        return this.scoreSheet;
+
 
     }
 
@@ -226,19 +209,22 @@ public class Player implements Serializable {
             String turn = clientConnection.receiveString();
             String topCard = clientConnection.receiveString();
             ArrayList<Card> h1 = clientConnection.receiveHand();
+            Card discardTop = clientConnection.receiveCard();
+
 
             System.out.println(turn);
             System.out.println(topCard);
             System.out.println("Your hand is: " + h1.get(0).toString() + ", " + h1.get(1).toString() + ", "+ h1.get(2).toString() + ", "+ h1.get(3).toString() + ", " + h1.get(4).toString());
+            tCard = discardTop;
 
             int round = clientConnection.receiveRoundNo();
             if (round == -1)
                 break;
-            System.out.println("\n \n \n ********Round Number " + round + "********");
+            System.out.println("********Round Number " + round + "********");
             //int[][] pl = clientConnection.receiveScores();
-            break;
 
-            //clientConnection.sendScores(playRound(dieRoll));
+
+            clientConnection.sendCard(playRound(h1));
         }
 
 
@@ -283,6 +269,26 @@ public class Player implements Serializable {
             } catch (IOException ex) {
                 System.out.println("Client failed to open");
             }
+        }
+
+        public void sendCard(Card c){
+            try{
+                dOut.writeObject(c);
+                dOut.flush();
+            } catch (Exception e){
+                System.out.println("Error");
+                e.printStackTrace();
+            }
+        }
+        public Card receiveCard(){
+            Card c = new Card(0,0);
+            try{
+                c =(Card) dIn.readObject();
+                return c;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return c;
         }
 
 
@@ -420,6 +426,8 @@ public class Player implements Serializable {
             }
             return 0;
         }
+
+
     }
 
     /*

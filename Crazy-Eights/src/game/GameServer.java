@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 //Taken from Professor Jean-Pierre Corriveau's Yahtzee code posted on cuLearn and adapted for this assignment
@@ -50,21 +51,11 @@ public class GameServer implements Serializable {
 
     public ArrayList<Card> randomizeHand(ArrayList<Card> d){
         ArrayList<Card> h = new ArrayList<>();
-        int c1,c2,c3,c4,c5;
-        c1 = (int) (Math.random() * ((d.size())));
-        c2 = (int) (Math.random() * ((d.size())));
-        c3 = (int) (Math.random() * ((d.size())));
-        c4 = (int) (Math.random() * ((d.size())));
-        c5 = (int) (Math.random() * ((d.size())));
-
-
-
-
-        h.add(0,d.get(c1));
-        h.add(1,d.get(c2));
-        h.add(2,d.get(c3));
-        h.add(3,d.get(c4));
-        h.add(4,d.get(c5));
+        h.add(0,d.get(0));
+        h.add(1,d.get(1));
+        h.add(2,d.get(2));
+        h.add(3,d.get(3));
+        h.add(4,d.get(4));
 
 
 
@@ -76,11 +67,11 @@ public class GameServer implements Serializable {
     public ArrayList<Card> removeDealtCards(ArrayList<Card> hand, ArrayList<Card> deck){
         ArrayList<Card> newDeck = new ArrayList<>();
        for(int i=0;i<deck.size();i++){
-           if(hand.get(0) == deck.get(i) || hand.get(1) == deck.get(i) || hand.get(3) == deck.get(i) || hand.get(4) == deck.get(i)){
-               deck.remove(i);
-
-           }
-           newDeck = deck;
+         for(int j=0;j<5;j++){
+             if(deck.get(i) != hand.get(j)){
+                 newDeck.add(deck.get(i));
+             }
+         }
        }
         return newDeck;
 
@@ -125,20 +116,27 @@ public class GameServer implements Serializable {
         ArrayList<Card> h2;
         ArrayList<Card> h3;
         ArrayList<Card> h4;
-
-
-
         h1 = randomizeHand(pile);
-        pile = removeDealtCards(h1,pile);
+        for(int i=0;i<5;i++){
+            pile.remove(0);
+        }
+
 
         h2 = randomizeHand(pile);
-        pile = removeDealtCards(h2,pile);
+        for(int i=0;i<5;i++){
+            pile.remove(0);
+        }
+
 
         h3 = randomizeHand(pile);
-        pile = removeDealtCards(h3,pile);
+        for(int i=0;i<5;i++){
+            pile.remove(0);
+        }
 
         h4 = randomizeHand(pile);
-        pile = removeDealtCards(h4,pile);
+        for(int i=0;i<5;i++){
+            pile.remove(0);
+        }
 
 
 
@@ -147,26 +145,41 @@ public class GameServer implements Serializable {
             playerServer[1].sendPlayers(players);
             playerServer[2].sendPlayers(players);
             playerServer[3].sendPlayers(players);
+            playerServer[0].sendString("Your turn");
+            playerServer[1].sendString("Player " + players[0].playerId + "'s turn");
+            playerServer[2].sendString("Player " + players[0].playerId + "'s turn");
+            playerServer[3].sendString("Player " + players[0].playerId + "'s turn");
+            playerServer[0].sendString("Top card in pile is: " + pile.get(0).toString());
+            playerServer[1].sendString("Top card in pile is: " + pile.get(0).toString());
+            playerServer[2].sendString("Top card in pile is: " + pile.get(0).toString());
+            playerServer[3].sendString("Top card in pile is: " + pile.get(0).toString());
+            playerServer[0].sendHand(h1);
+            playerServer[1].sendHand(h2);
+            playerServer[2].sendHand(h3);
+            playerServer[3].sendHand(h4);
+            playerServer[0].sendCard(pile.get(0));
+            playerServer[1].sendCard(pile.get(0));
+            playerServer[2].sendCard(pile.get(0));
+            playerServer[3].sendCard(pile.get(0));
+            playerServer[0].sendRoundNo(roundNum);
+            playerServer[1].sendRoundNo(roundNum);
+            playerServer[2].sendRoundNo(roundNum);
+            playerServer[3].sendRoundNo(roundNum);
+
+
+
+
+
+
+
+
 
             while(true){
-                //playerServer[0].sendRoundNo(roundNum);
-                //playerServer[0].sendScores(players);
-                playerServer[0].sendString("Your turn");
-                playerServer[1].sendString("Player " + players[0].playerId + "'s turn");
-                playerServer[2].sendString("Player " + players[0].playerId + "'s turn");
-                playerServer[3].sendString("Player " + players[0].playerId + "'s turn");
-                playerServer[0].sendString("Top card in pile is: " + pile.get(0).toString());
-                playerServer[1].sendString("Top card in pile is: " + pile.get(0).toString());
-                playerServer[2].sendString("Top card in pile is: " + pile.get(0).toString());
-                playerServer[3].sendString("Top card in pile is: " + pile.get(0).toString());
-                playerServer[0].sendHand(h1);
-                playerServer[1].sendHand(h2);
-                playerServer[2].sendHand(h3);
-                playerServer[3].sendHand(h4);
-                break;
+
 
             }
         }
+
         catch (Exception e){
             System.out.println("ARGHHH");
             e.printStackTrace();
@@ -248,6 +261,28 @@ public class GameServer implements Serializable {
                 e.printStackTrace();
             }
         }
+
+        public void sendCard(Card c){
+            try{
+                dOut.writeObject(c);
+                dOut.flush();
+            } catch (Exception e){
+                System.out.println("Error");
+                e.printStackTrace();
+            }
+        }
+        public Card receiveCard(){
+            Card c = new Card(0,0);
+            try{
+                c =(Card) dIn.readObject();
+                return c;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return c;
+        }
+
+
 
         /*
          * receive scores of other players
