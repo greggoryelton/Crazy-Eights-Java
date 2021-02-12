@@ -8,27 +8,32 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Game implements Serializable {
+    int score = 0;
+    Player[] players;
 
-
-    public Game(){
-        ArrayList<Card> d = new ArrayList<>();
-        for(int i=0;i<Card.suits.length;i++){
-            for(int j=0;j<Card.values.length;j++){
-                d.add(new Card(i,j));
-            }
-
+    public int score8s(Card c){
+        if(c.getValue() == 8){
+            score = score +50;
+            return score;
         }
-
-
+        return score;
     }
 
+    public int scoreHighCard(Card c){
+        if(c.toString().contains("K") || c.toString().contains("Q") || c.toString().contains("J")){
+            score = score + 10;
+            return score;
+        }
+        return score;
+    }
 
-
-
-
-
-
-
+    public int scoreCard(Card c){
+        if(c.getValue() >= 1 && c.getValue() <= 10){
+            score = score + c.getValue();
+            return score;
+        }
+        return score;
+    }
 
 
     public Player getWinner(Player[] players){

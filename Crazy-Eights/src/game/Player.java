@@ -29,7 +29,7 @@ public class Player implements Serializable {
 
     static Client clientConnection;
 
-    Player[] players = new Player[3];
+    Player[] players = new Player[4];
 //	private ArrayList<String> scoreSheetKey = new ArrayList<String>(Arrays.asList("one", "two", "three", "four", "five",
 //			"six", "3ok", "4ok", "full", "sst", "lst", "yahtzee", "chance", "bonus"));
 
@@ -190,7 +190,7 @@ public class Player implements Serializable {
     }
 
     public void initializePlayers() {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             players[i] = new Player(" ");
         }
     }
@@ -227,15 +227,9 @@ public class Player implements Serializable {
             String topCard = clientConnection.receiveString();
             ArrayList<Card> h1 = clientConnection.receiveHand();
 
-
-
-
             System.out.println(turn);
             System.out.println(topCard);
             System.out.println("Your hand is: " + h1.get(0).toString() + ", " + h1.get(1).toString() + ", "+ h1.get(2).toString() + ", "+ h1.get(3).toString() + ", " + h1.get(4).toString());
-
-
-
 
             int round = clientConnection.receiveRoundNo();
             if (round == -1)
@@ -291,6 +285,7 @@ public class Player implements Serializable {
             }
         }
 
+
         /*
          * function to send the score sheet to the server
          */
@@ -314,6 +309,14 @@ public class Player implements Serializable {
             } catch (IOException ex) {
                 System.out.println("Player not sent");
                 ex.printStackTrace();
+            }
+        }
+        public void sendHand(ArrayList<Card> h){
+            try{
+                dOut.writeObject(h);
+                dOut.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 
