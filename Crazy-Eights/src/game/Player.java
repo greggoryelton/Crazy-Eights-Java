@@ -26,7 +26,10 @@ public class Player implements Serializable {
     private int[] scoreSheet = new int[15];
     int roundNum =0;
     ArrayList<Card> hand = new ArrayList<>();
+    ArrayList<Card> deck = new ArrayList<>();
+
     public Card tCard;
+
 
     static Client clientConnection;
 
@@ -39,7 +42,7 @@ public class Player implements Serializable {
     /*
      * play a round of the game
      */
-    public Card playRound(ArrayList<Card> userHand) {
+    public ArrayList<Card> playRound(ArrayList<Card> userHand) {
 
         Scanner myObj = new Scanner(System.in);
         int count = 0; // reroll 3 times
@@ -48,34 +51,39 @@ public class Player implements Serializable {
         while (end == 0) {
             System.out.println("Select an action: ");
             if (count < 3) {
-                System.out.println("(1) Choose a card to play from your hand (ie. 0,1,2,3 or 4)");
+                System.out.println("(1) Choose a card to play from your hand (ie. 0,1,2,3...)");
                 System.out.println("(2) Draw a new card");
             }
 
             int act = myObj.nextInt();
             if(act == 1 && count < 3){
-                System.out.println("Choose a card to play from 0-4");
+                System.out.println("Choose a card to play from 0-" + (userHand.size() -1));
                 int c = myObj.nextInt();
                 if((c > 4 || c<0) || (userHand.get(c).getSuit() != tCard.getSuit() && userHand.get(c).getValue() != tCard.getValue())){
                     System.out.println("Invalid Entry.");
                     c = myObj.nextInt();
                 }
+                deck.add(deck.size()-1,userHand.get(c));
 
-                clientConnection.sendCard(userHand.get(c));
-                System.out.println("Top Card: " + tCard.toString());
                 System.out.println("Success");
-                return userHand.get(c);
+
             }
             if(act == 2 && count < 3){
-                System.out.println("Drawing new card...");
-
+                userHand.add(deck.get(count));
+                System.out.println("Top card in pile is: " + deck.get(deck.size()-1));
+                System.out.println("New Card has been drawn: " + userHand.get(userHand.size()-1).toString());
+                for(int i=0;i<userHand.size();i++){
+                    System.out.print(userHand.get(i).toString() + ", ");
+                }
+                count++;
             }
 
-            end =1;
+           //end =0;
 
 
         }
-        return new Card(-1,-1);
+
+        return deck;
 
 
 
@@ -212,19 +220,23 @@ public class Player implements Serializable {
             Card discardTop = clientConnection.receiveCard();
 
 
+
             System.out.println(turn);
             System.out.println(topCard);
             System.out.println("Your hand is: " + h1.get(0).toString() + ", " + h1.get(1).toString() + ", "+ h1.get(2).toString() + ", "+ h1.get(3).toString() + ", " + h1.get(4).toString());
             tCard = discardTop;
 
+
             int round = clientConnection.receiveRoundNo();
             if (round == -1)
                 break;
             System.out.println("********Round Number " + round + "********");
+            ArrayList<Card> d = clientConnection.receiveDeck();
+            deck = d;
             //int[][] pl = clientConnection.receiveScores();
 
 
-            clientConnection.sendCard(playRound(h1));
+            clientConnection.sendDeck(playRound(h1));
         }
 
 
@@ -325,6 +337,14 @@ public class Player implements Serializable {
                 e.printStackTrace();
             }
         }
+        public void sendDeck(ArrayList<Card> d){
+            try{
+                dOut.writeObject(d);
+                dOut.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         public String receiveString() {
             String s = "";
@@ -337,6 +357,19 @@ public class Player implements Serializable {
         }
 
         public ArrayList<Card> receiveHand(){
+            ArrayList<Card> h = new ArrayList<>();
+            try {
+                h = (ArrayList<Card>) dIn.readObject();
+                return h;
+
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            return h;
+
+        }
+
+        public ArrayList<Card> receiveDeck(){
             ArrayList<Card> h = new ArrayList<>();
             try {
                 h = (ArrayList<Card>) dIn.readObject();

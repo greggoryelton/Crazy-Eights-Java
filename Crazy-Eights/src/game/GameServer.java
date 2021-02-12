@@ -116,6 +116,8 @@ public class GameServer implements Serializable {
         ArrayList<Card> h2;
         ArrayList<Card> h3;
         ArrayList<Card> h4;
+        ArrayList<Card> pickupPile;
+        String buffer = "";
         h1 = randomizeHand(pile);
         for(int i=0;i<5;i++){
             pile.remove(0);
@@ -137,9 +139,6 @@ public class GameServer implements Serializable {
         for(int i=0;i<5;i++){
             pile.remove(0);
         }
-
-
-
         try {
             playerServer[0].sendPlayers(players);
             playerServer[1].sendPlayers(players);
@@ -168,16 +167,25 @@ public class GameServer implements Serializable {
 
 
 
+            Card top = pile.get(0);
+            pile.remove(0);
 
 
+            //Send the Deck
+            playerServer[0].sendDeckPile(pile);
+            playerServer[1].sendDeckPile(pile);
+            playerServer[2].sendDeckPile(pile);
+            playerServer[3].sendDeckPile(pile);
 
 
+            pickupPile = pile;
+
+            pickupPile = playerServer[0].receiveDeck();
+            top = pickupPile.get(pickupPile.size()-1);
+
+            System.out.println(top);
 
 
-            while(true){
-
-
-            }
         }
 
         catch (Exception e){
@@ -229,6 +237,16 @@ public class GameServer implements Serializable {
             }
 
         }
+
+        public String receiveString() {
+            String s = "";
+            try {
+                return dIn.readUTF();
+            } catch (IOException e){
+                System.out.println("Error");
+            }
+            return s;
+        }
         public void sendString(String str) {
             try {
                 dOut.writeUTF(str);
@@ -242,6 +260,26 @@ public class GameServer implements Serializable {
         public void sendHand(ArrayList<Card> h){
             try{
                 dOut.writeObject(h);
+                dOut.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        public ArrayList<Card> receiveDeck() {
+            ArrayList<Card> h = new ArrayList<>();
+            try {
+                h = (ArrayList<Card>) dIn.readObject();
+                return h;
+
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            return h;
+
+        }
+        public void sendDeckPile(ArrayList<Card> d){
+            try{
+                dOut.writeObject(d);
                 dOut.flush();
             } catch (IOException e) {
                 e.printStackTrace();
