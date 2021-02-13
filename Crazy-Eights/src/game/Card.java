@@ -87,7 +87,7 @@ public class Card implements Serializable {
     }
     public int getValue(){
 
-        return Integer.parseInt(values[value]);
+        return this.value;
     }
 
     public char getSuit(){

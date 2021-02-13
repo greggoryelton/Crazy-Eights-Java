@@ -22,7 +22,8 @@ public class GameServer implements Serializable {
     Player[] players = new Player[4];
     int[] scores;
     ServerSocket ss;
-
+    int currentPlayerID =0;
+    public Card tCard;
     Game game = new Game();
 
     public static void main(String[] args) throws  ClassNotFoundException {
@@ -156,20 +157,16 @@ public class GameServer implements Serializable {
             playerServer[1].sendHand(h2);
             playerServer[2].sendHand(h3);
             playerServer[3].sendHand(h4);
-            playerServer[0].sendCard(pile.get(0));
-            playerServer[1].sendCard(pile.get(0));
-            playerServer[2].sendCard(pile.get(0));
-            playerServer[3].sendCard(pile.get(0));
             playerServer[0].sendRoundNo(roundNum);
             playerServer[1].sendRoundNo(roundNum);
             playerServer[2].sendRoundNo(roundNum);
             playerServer[3].sendRoundNo(roundNum);
 
+            game.setPickUpCard(pile.get(0));
 
-
-            Card top = pile.get(0);
             pile.remove(0);
 
+            System.out.println(game.tCard.toString());
 
             //Send the Deck
             playerServer[0].sendDeckPile(pile);
@@ -177,13 +174,18 @@ public class GameServer implements Serializable {
             playerServer[2].sendDeckPile(pile);
             playerServer[3].sendDeckPile(pile);
 
+            playerServer[0].sendCard(game.tCard);
+
 
             pickupPile = pile;
 
             pickupPile = playerServer[0].receiveDeck();
-            top = pickupPile.get(pickupPile.size()-1);
 
-            System.out.println(top);
+
+            //System.out.println(top);
+            //currentPlayerID = playerServer[0].receiveTurnID();
+            System.out.println(game.playerTurnID);
+
 
 
         }
@@ -337,6 +339,16 @@ public class GameServer implements Serializable {
                 e.printStackTrace();
             }
             return null;
+        }
+        public int receiveTurnID(){
+            int id =0;
+            try{
+                id = dIn.readInt();
+                return id;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return id;
         }
 
         /*
