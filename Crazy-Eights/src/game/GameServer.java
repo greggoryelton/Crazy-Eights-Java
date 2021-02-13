@@ -175,16 +175,32 @@ public class GameServer implements Serializable {
             playerServer[3].sendDeckPile(pile);
 
             playerServer[0].sendCard(game.tCard);
+            playerServer[1].sendCard(game.tCard);
+            playerServer[2].sendCard(game.tCard);
+            playerServer[3].sendCard(game.tCard);
+
+            /*
+            playerServer[0].sendString("Current Turn: " + players[currentPlayerID].playerId + ", Next Player:  " + players[currentPlayerID++].playerId);
+            playerServer[1].sendString("Current Turn: " + players[currentPlayerID].playerId + ", Next Player:  " + players[currentPlayerID++].playerId);
+            playerServer[2].sendString("Current Turn: " + players[currentPlayerID].playerId + ", Next Player:  " + players[currentPlayerID++].playerId);
+            playerServer[3].sendString("Current Turn: " + players[currentPlayerID].playerId + ", Next Player:  " + players[currentPlayerID++].playerId);
+
+*/
+
 
 
             pickupPile = pile;
 
             pickupPile = playerServer[0].receiveDeck();
+            tCard = playerServer[0].receiveCard();
+            game.setPickUpCard(tCard);
+
 
 
             //System.out.println(top);
             //currentPlayerID = playerServer[0].receiveTurnID();
             System.out.println(game.playerTurnID);
+            System.out.println(tCard);
 
 
 
