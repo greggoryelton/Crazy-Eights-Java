@@ -108,6 +108,8 @@ public class Player implements Serializable {
                     //empty hand??
                 }
 
+                //ADD IN DIRECTION OF PLAYERS
+
 
 
             }end =1;
