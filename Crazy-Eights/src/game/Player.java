@@ -20,7 +20,7 @@ public class Player implements Serializable {
     private static final long serialVersionUID = 1L;
     public String name;
 
-    int playerId = 1;
+    int playerId = 0;
 
     Game game = new Game();
     private int[] scoreSheet = new int[15];
@@ -29,6 +29,7 @@ public class Player implements Serializable {
     ArrayList<Card> deck = new ArrayList<>();
     public int score = 0;
     public Card tCard = game.tCard;
+    public String direction = "Right";
 
 
     static Client clientConnection;
@@ -64,7 +65,6 @@ public class Player implements Serializable {
                 System.out.println();
                 int act = myObj.nextInt();
                 if (act == 1 && count < 3) {
-
                     System.out.println("Choose a card to play from 0-" + (userHand.size() - 1));
                     int c = myObj.nextInt();
                     if (game.checkCard(userHand.get(c))) {
@@ -77,6 +77,14 @@ public class Player implements Serializable {
                             System.out.println("Change suit to: 0. C, 1. D, 2. H, 3. S");
                             int suitSelection = myObj.nextInt();
                             game.tCard.suit = suitSelection;
+                        }
+                        if(game.tCard.getValue() == 0){
+                            if(direction.equals("Left")){
+                                direction = "Right";
+                            }if(direction.equals("Right")){
+                                direction = "Left";
+                            }
+
                         }
 
                         break;
@@ -110,14 +118,9 @@ public class Player implements Serializable {
 
                 //ADD IN DIRECTION OF PLAYERS
 
-
-
             }end =1;
         }
-        System.out.print("Hand: ");
-        for(int i=0;i<userHand.size();i++){
-            System.out.print(userHand.get(i).toString() +" ");
-        }
+
         System.out.println();
 
         return deck;
@@ -246,37 +249,81 @@ public class Player implements Serializable {
     public void startGame() throws IOException {
         // receive players once for names
         players = clientConnection.receivePlayer();
-        int nextID = game.getNextID();
-        String topCard = clientConnection.receiveString();
+       // int nextID = game.getNextID();
+       // String topCard = clientConnection.receiveString();
         ArrayList<Card> h1 = clientConnection.receiveHand();
+        int round;
+        boolean end = false;
 
 
 
-        while (true) {
-            int round = clientConnection.receiveRoundNo();
+        while (!end) {
+            round = clientConnection.receiveRoundNo();
             System.out.println("********Round Number " + round + "********");
 
             tCard = clientConnection.receiveCard();
+
+            System.out.println();
+            clientConnection.receiveScores();
+            System.out.println();
+            direction = clientConnection.receiveString();
+            String skipped = clientConnection.receiveString();
+            System.out.print("Hand: ");
+            for(int i=0;i<h1.size();i++){
+                System.out.print(h1.get(i).toString() +" ");
+            }
+            System.out.println();
+            System.out.println("Direction: " + direction);
+            if(skipped.equals("True")){
+                System.out.println("Queen Played... Player " + round + "'s turn was skipped");
+                continue;
+            }
             game.setPickUpCard(tCard);
             System.out.println("Top Card: " +tCard.toString());
+            System.out.println("ID: " + this.playerId );
+            System.out.println("Player " + round + " is playing");
             if(round == this.playerId){
-                System.out.println("Player " + round + " is playing");
-                playerId++;
-                System.out.println("Player " + playerId + "'s turn is next" );
+                if(round == 4 && direction.equals("Right")){
+                    round =0;
+                }
+                if(round == 1 && direction.equals("Left")){
+                    round = 5;
+                }
+                if(direction.equals("Right") ){
+                    round++;
+                }
+                else if(direction.equals("Left")){
+                    round--;
+                }
+                System.out.println("Player " + round + "'s turn is next" );
+                System.out.println();
                 deck = clientConnection.receiveDeck();
                 clientConnection.sendDeck(playRound(h1));
                 clientConnection.sendCard(game.tCard);
                 clientConnection.sendScore(score);
-
+                clientConnection.sendString(direction);
             }
+
+
             if (round == -1)
                 break;
 
             game.setPickUpCard(tCard);
 
+            end = clientConnection.receiveBoolean();
 
+            if(end){
+                //REceives index of winner
+                int winner =  clientConnection.receiveRoundNo();
+                System.out.println("Player " + players[winner].playerId + " has won the game!");
+
+                System.out.println("Final Scores: ");
+                clientConnection.receiveScores();
+
+            }
 
         }
+
     }
     private class Client {
         Socket socket;
@@ -388,6 +435,18 @@ public class Player implements Serializable {
             return s;
         }
 
+        public boolean receiveBoolean(){
+            boolean b = false;
+            try{
+                b = dIn.readBoolean();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return b;
+        }
+
+
         public ArrayList<Card> receiveHand(){
             ArrayList<Card> h = new ArrayList<>();
             try {
@@ -460,16 +519,14 @@ public class Player implements Serializable {
         /*
          * receive scores of other players
          */
-        public int[][] receiveScores() {
+        public int[] receiveScores() {
             try {
-                int[][] sc = new int[3][15];
-                for (int j = 0; j < 3; j++) {
-                    for (int i = 0; i < 15; i++) {
-                        sc[j][i] = dIn.readInt();
-                    }
-                    System.out.println();
+                int[] sc = new int[4];
+                System.out.println("Scores: ");
+                for (int i = 0; i < 4; i++) {
+                    sc[i] = dIn.readInt();
+                    System.out.println("Player " + (i+1) + ": " + sc[i]);
                 }
-
                 return sc;
             } catch (Exception e) {
                 System.out.println("Score sheet not received");
@@ -491,14 +548,15 @@ public class Player implements Serializable {
          * receive scores of other players
          */
         public int receiveRoundNo() {
-            roundNum++;
+            int rnd =0;
             try {
-                return dIn.readInt();
+                rnd = dIn.readInt();
             } catch (Exception e) {
                 System.out.println("Invalid Round Number.");
                 e.printStackTrace();
             }
-            return 0;
+            return rnd;
+
         }
 
 

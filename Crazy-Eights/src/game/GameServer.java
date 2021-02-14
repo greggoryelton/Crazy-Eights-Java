@@ -17,6 +17,9 @@ public class GameServer implements Serializable {
     private int numPlayers;
     private int MAX_TURNS;
     private static final long serialVersionUID = 1L;
+    String skip = "False";
+
+    String direction = "Right";
 
     Server[] playerServer = new Server[4];
     Player[] players = new Player[4];
@@ -25,6 +28,7 @@ public class GameServer implements Serializable {
     int currentPlayerID =0;
     public Card tCard;
     Game game = new Game();
+    boolean end = false;
 
     public static void main(String[] args) throws  ClassNotFoundException {
         GameServer sr = new GameServer();
@@ -138,10 +142,13 @@ public class GameServer implements Serializable {
             playerServer[1].sendPlayers(players);
             playerServer[2].sendPlayers(players);
             playerServer[3].sendPlayers(players);
+            /*
             playerServer[0].sendString("Top card in pile is: " + game.tCard.toString());
             playerServer[1].sendString("Top card in pile is: " + game.tCard.toString());
             playerServer[2].sendString("Top card in pile is: " + game.tCard.toString());
             playerServer[3].sendString("Top card in pile is: " + game.tCard.toString());
+
+             */
             playerServer[0].sendHand(h1);
             playerServer[1].sendHand(h2);
             playerServer[2].sendHand(h3);
@@ -152,7 +159,7 @@ public class GameServer implements Serializable {
             pile.remove(0);
 
 
-            while(true){
+            while(!end){
                 playerServer[0].sendRoundNo(roundID);
                 playerServer[1].sendRoundNo(roundID);
                 playerServer[2].sendRoundNo(roundID);
@@ -163,23 +170,65 @@ public class GameServer implements Serializable {
                 playerServer[2].sendCard(game.tCard);
                 playerServer[3].sendCard(game.tCard);
 
+                //Send scores here
+                playerServer[0].sendScoresList(scores);
+                playerServer[1].sendScoresList(scores);
+                playerServer[2].sendScoresList(scores);
+                playerServer[3].sendScoresList(scores);
+
+                playerServer[0].sendString(direction);
+                playerServer[1].sendString(direction);
+                playerServer[2].sendString(direction);
+                playerServer[3].sendString(direction);
+
+                playerServer[0].sendString(skip);
+                playerServer[1].sendString(skip);
+                playerServer[2].sendString(skip);
+                playerServer[3].sendString(skip);
+
+                if(skip.equals("True")){
+                    skip = "False";
+                    if(roundID == 4 && direction.equals("Right")){
+                        roundID =0;
+                    }
+                    if(roundID == 1 && direction.equals("Left")){
+                        roundID = 5;
+                    }
+                    if(direction.equals("Right") ){
+                        roundID++;
+                    }
+                    else {
+                        roundID--;
+                    }
+                    continue;
+                }
+
+
                 //game.tCard = pile.get(0);
                 //System.out.println(game.tCard.toString());
 
                 System.out.println("Current Top Card: " + game.tCard.toString());
                 //Send the Deck
 
-                System.out.println(roundID);
+                System.out.println(roundID + " Got Here");
+                System.out.println("Deck: ");
+                for(int i=0;i<pile.size();i++){
+                    System.out.print(pile.get(i).toString() + " ");
+                }
+
                 playerServer[roundID-1].sendDeckPile(pile);
 
                 pile = playerServer[roundID-1].receiveDeck();
                 tCard = playerServer[roundID-1].receiveCard();
                 scores[roundID-1] += playerServer[roundID-1].receiveScore();
                 game.setPickUpCard(tCard);
-                System.out.println(tCard);
+                //System.out.println(tCard);
 
-                //Send all scores to each player
-                //Have player print them on player side before next round
+                direction = playerServer[roundID-1].receiveString();
+
+                if(game.tCard.getValue() == 11){
+                   skip = "True";
+                }
 
                 for(int i=0;i<scores.length;i++){
                     System.out.println("PLayer " + (i+1) + " score: "+ scores[i]);
@@ -189,13 +238,49 @@ public class GameServer implements Serializable {
                 //print that winner
                 //flag to stop game
 
-                if(roundID == 4){
-                    roundID =1;
-                    continue;
+                if(roundID == 4 && direction.equals("Right")){
+                    roundID =0;
                 }
-                roundID++;
+                if(roundID == 1 && direction.equals("Left")){
+                    roundID = 5;
+                }
+                if(direction.equals("Right") ){
+                    roundID++;
+                }
+                else {
+                    roundID--;
+                }
+                //roundID++;
+
+                if(game.isGameFinished(scores)){
+                    end = true;
+                    playerServer[0].sendBoolean(end);
+                    playerServer[1].sendBoolean(end);
+                    playerServer[2].sendBoolean(end);
+                    playerServer[3].sendBoolean(end);
+                    //NOT SENDING RND NO, THIS SENDS INDEX OF WINNER
+                    playerServer[0].sendRoundNo(game.getWinner(scores));
+                    playerServer[1].sendRoundNo(game.getWinner(scores));
+                    playerServer[2].sendRoundNo(game.getWinner(scores));
+                    playerServer[3].sendRoundNo(game.getWinner(scores));
+
+                    playerServer[0].sendScoresList(scores);
+                    playerServer[1].sendScoresList(scores);
+                    playerServer[2].sendScoresList(scores);
+                    playerServer[3].sendScoresList(scores);
+
+
+
+                }
+
+
+
+
 
             }
+
+
+
 
         }
         catch (Exception e){
@@ -294,6 +379,19 @@ public class GameServer implements Serializable {
             }
         }
 
+        public void sendScoresList(int[] scores) {
+            try {
+                for (int i = 0; i < scores.length; i++) {
+                    dOut.writeInt(scores[i]);
+                }
+                dOut.flush();
+
+            } catch (IOException e) {
+                System.out.println("Scores not received");
+                e.printStackTrace();
+            }
+        }
+
 
         /*
          * receive scores of other players
@@ -326,6 +424,15 @@ public class GameServer implements Serializable {
                 e.printStackTrace();
             }
             return c;
+        }
+
+        public void sendBoolean(boolean b){
+            try{
+                dOut.writeBoolean(b);
+                dOut.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
 

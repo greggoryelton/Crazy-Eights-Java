@@ -74,18 +74,25 @@ public class Game implements Serializable {
     }
 
 
-    public Player getWinner(Player[] players){
-        Player t = players[1];
-        if(players[0].getScore() >= players[1].getScore()){
-            t = players[0];
+    public int getWinner(int[] scores){
+        int winnerScore = scores[0];
+        int index = 0;
+        for(int i=0;i<scores.length;i++){
+            if(scores[i]< winnerScore ){
+                winnerScore = scores[i];
+                index = i;
+            }
         }
-        if(players[2].getScore() >= t.getScore()){
-            t = players[2];
+        return index;
+    }
+
+    public boolean isGameFinished(int[] scores){
+        for(int i=0;i<scores.length;i++){
+            if(scores[i] >= 100){
+                return true;
+            }
         }
-        if(players[3].getScore() >= t.getScore()){
-            t = players[3];
-        }
-        return t;
+        return false;
     }
 
 }
