@@ -142,13 +142,15 @@ public class GameServer implements Serializable {
             playerServer[1].sendPlayers(players);
             playerServer[2].sendPlayers(players);
             playerServer[3].sendPlayers(players);
-            /*
-            playerServer[0].sendString("Top card in pile is: " + game.tCard.toString());
-            playerServer[1].sendString("Top card in pile is: " + game.tCard.toString());
-            playerServer[2].sendString("Top card in pile is: " + game.tCard.toString());
-            playerServer[3].sendString("Top card in pile is: " + game.tCard.toString());
 
-             */
+           /*
+            playerServer[0].sendHand(game.rigHands3(1));
+            playerServer[1].sendHand(game.rigHands3(2));
+            playerServer[2].sendHand(game.rigHands3(3));
+            playerServer[3].sendHand(game.rigHands3(4));
+
+            */
+
             playerServer[0].sendHand(h1);
             playerServer[1].sendHand(h2);
             playerServer[2].sendHand(h3);

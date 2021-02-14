@@ -86,6 +86,9 @@ public class Player implements Serializable {
                             }
 
                         }
+                        if(game.tCard.getValue() == 1){
+
+                        }
 
                         break;
 
@@ -102,18 +105,44 @@ public class Player implements Serializable {
                     deck.remove(0);
                     count++;
                 }
+                if(act == 0){
+                    System.out.println("Cheat Menu Discovered ^_^");
+                    System.out.println();
+                    System.out.println("(4) Set top card");
+                    System.out.println("(5) Add card to hand");
+                    System.out.println("(6) Empty current hand");
+                }
 
                 if (act == 4){
                     //Change top card
+
+                    System.out.println("Select top card suit/value Ex. 0,0 -> 1C");
+                    int selection = myObj.nextInt();
+                    game.tCard.suit = selection;
+                    selection = myObj.nextInt();
+                    game.tCard.value = selection;
+                    System.out.println("New Top Card: " + game.tCard.toString());
                 }
                 if (act == 5){
+                    ArrayList<Card> moddedHand = new ArrayList<>();
                     //Insert card into hand
+
+                    System.out.println("Select the card to add to hand Ex. 0,0 -> 1C");
+                    int s = myObj.nextInt();
+                    int v = myObj.nextInt();
+                    userHand.add(new Card(s, v));
+                    System.out.println("Card: " + userHand.get(userHand.size()-1) + " has been added to hand.");
+                        //userHand = moddedHand;
+
                 }
-                if (act == 6){
-                    //skip turn
-                }
-                if(act == 7){
-                    //empty hand??
+                if(act == 6){
+                    //Clear hand
+
+                    System.out.println("Hand has been emptied");
+                    ArrayList<Card> emptyHand = new ArrayList<>();
+                    userHand = emptyHand;
+
+
                 }
 
                 //ADD IN DIRECTION OF PLAYERS
@@ -124,6 +153,20 @@ public class Player implements Serializable {
         System.out.println();
 
         return deck;
+    }
+
+    public void cheatGame(){
+
+
+    }
+
+    public ArrayList<Card> rigDeck(){
+        ArrayList<Card> riggedDeck = new ArrayList<>();
+        //Value, Suit
+        riggedDeck.add(new Card(0,12)); //KC
+
+        return riggedDeck;
+
     }
 
     public int[] scoreRound(int r, int[] dieRoll) {

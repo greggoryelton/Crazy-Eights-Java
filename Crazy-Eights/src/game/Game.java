@@ -86,6 +86,43 @@ public class Game implements Serializable {
         return index;
     }
 
+    public ArrayList<Card> rigHands3(int playerID){
+        ArrayList<Card> moddedHand = new ArrayList<>();
+
+        if(playerID == 1){
+            moddedHand.add(new Card(2,3));
+            moddedHand.add(new Card(3,6));
+            moddedHand.add(new Card(1,4));
+            moddedHand.add(new Card(1,5));
+            moddedHand.add(new Card(1,8));
+        }
+        if(playerID == 2){
+            moddedHand.add(new Card(3,3));
+            moddedHand.add(new Card(3,5));
+            moddedHand.add(new Card(0,12));
+            moddedHand.add(new Card(2,7));
+            moddedHand.add(new Card(1,9));
+        }
+        if(playerID==3){
+            moddedHand.add(new Card(3,8));
+            moddedHand.add(new Card(0,5));
+            moddedHand.add(new Card(0,8));
+            moddedHand.add(new Card(1,10));
+            moddedHand.add(new Card(2,2));
+        }
+        if(playerID == 4){
+            moddedHand.add(new Card(1,6));
+            moddedHand.add(new Card(2,10));
+            moddedHand.add(new Card(2,11));
+            moddedHand.add(new Card(2,12));
+            moddedHand.add(new Card(0,4));
+        }
+        return moddedHand;
+
+    }
+
+
+
     public boolean isGameFinished(int[] scores){
         for(int i=0;i<scores.length;i++){
             if(scores[i] >= 100){
