@@ -212,7 +212,7 @@ public class GameServer implements Serializable {
                 System.out.println("Current Top Card: " + game.tCard.toString());
                 //Send the Deck
 
-                System.out.println(roundID + " Got Here");
+                System.out.println(roundID);
                 System.out.println("Deck: ");
                 for(int i=0;i<pile.size();i++){
                     System.out.print(pile.get(i).toString() + " ");

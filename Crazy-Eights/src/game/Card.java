@@ -23,44 +23,6 @@ public class Card implements Serializable {
         this.value = v;
     }
 
-    public static ArrayList<Card> rigDeck(){
-        int size = 52;
-
-        ArrayList<Card> riggedDeck = new ArrayList<>();
-       // ArrayList<Card> d2 = new ArrayList<>();
-
-        /*
-        This part rigs the deck so that the pickup pile is exactly the same as the test cases for Part 1 Testing
-        */
-
-        //6C
-        riggedDeck.add(new Card(0, 5));
-        //6D
-        riggedDeck.add(new Card(1,5));
-        //5C
-        riggedDeck.add(new Card(0,4));
-        //6D
-        riggedDeck.add(new Card(1,5));
-        //5S
-        riggedDeck.add(new Card(3,4));
-        //7H
-        riggedDeck.add(new Card(2,6));
-        //6D
-        riggedDeck.add(new Card(1,5));
-        //5S
-        riggedDeck.add(new Card(3,4));
-        //4H
-        riggedDeck.add(new Card(2,3));
-        //6D
-        riggedDeck.add(new Card(1,5));
-        //8H
-        riggedDeck.add(new Card(2,7));
-        //6C
-        riggedDeck.add(new Card(0, 5));
-
-        return riggedDeck;
-    }
-
     public static ArrayList<Card> initDeck(){
         ArrayList<Card> deck = new ArrayList<>();
         int size = 52;

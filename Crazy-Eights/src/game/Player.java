@@ -137,7 +137,6 @@ public class Player implements Serializable {
                 }
                 if(act == 6){
                     //Clear hand
-
                     System.out.println("Hand has been emptied");
                     ArrayList<Card> emptyHand = new ArrayList<>();
                     userHand = emptyHand;
@@ -153,11 +152,6 @@ public class Player implements Serializable {
         System.out.println();
 
         return deck;
-    }
-
-    public void cheatGame(){
-
-
     }
 
     public ArrayList<Card> rigDeck(){
