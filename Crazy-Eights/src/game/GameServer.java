@@ -268,13 +268,12 @@ public class GameServer implements Serializable {
                     playerServer[1].sendScoresList(scores);
                     playerServer[2].sendScoresList(scores);
                     playerServer[3].sendScoresList(scores);
-
-
-
+                    continue;
                 }
-
-
-
+                playerServer[0].sendBoolean(end);
+                playerServer[1].sendBoolean(end);
+                playerServer[2].sendBoolean(end);
+                playerServer[3].sendBoolean(end);
 
 
             }

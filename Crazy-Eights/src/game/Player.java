@@ -255,8 +255,6 @@ public class Player implements Serializable {
         int round;
         boolean end = false;
 
-
-
         while (!end) {
             round = clientConnection.receiveRoundNo();
             System.out.println("********Round Number " + round + "********");
