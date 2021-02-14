@@ -76,7 +76,6 @@ public class GameServer implements Serializable {
        }
         return newDeck;
 
-
     }
 
     public void acceptConnections() throws ClassNotFoundException {
@@ -106,13 +105,12 @@ public class GameServer implements Serializable {
             System.out.println("Could not connect players");
         }
     }
-
-
-
     public void gameLoop() {
         Boolean flag = false;
+        int[] scores = {0,0,0,0};
+
         //TO-DO
-        int roundNum = 1;
+        int roundID = 1;
         ArrayList<Card> h1;
         ArrayList<Card> h2;
         ArrayList<Card> h3;
@@ -123,19 +121,14 @@ public class GameServer implements Serializable {
         for(int i=0;i<5;i++){
             pile.remove(0);
         }
-
-
         h2 = randomizeHand(pile);
         for(int i=0;i<5;i++){
             pile.remove(0);
         }
-
-
         h3 = randomizeHand(pile);
         for(int i=0;i<5;i++){
             pile.remove(0);
         }
-
         h4 = randomizeHand(pile);
         for(int i=0;i<5;i++){
             pile.remove(0);
@@ -145,73 +138,70 @@ public class GameServer implements Serializable {
             playerServer[1].sendPlayers(players);
             playerServer[2].sendPlayers(players);
             playerServer[3].sendPlayers(players);
-            playerServer[0].sendString("Your turn");
-            playerServer[1].sendString("Player " + players[0].playerId + "'s turn");
-            playerServer[2].sendString("Player " + players[0].playerId + "'s turn");
-            playerServer[3].sendString("Player " + players[0].playerId + "'s turn");
-            playerServer[0].sendString("Top card in pile is: " + pile.get(0).toString());
-            playerServer[1].sendString("Top card in pile is: " + pile.get(0).toString());
-            playerServer[2].sendString("Top card in pile is: " + pile.get(0).toString());
-            playerServer[3].sendString("Top card in pile is: " + pile.get(0).toString());
+            playerServer[0].sendString("Top card in pile is: " + game.tCard.toString());
+            playerServer[1].sendString("Top card in pile is: " + game.tCard.toString());
+            playerServer[2].sendString("Top card in pile is: " + game.tCard.toString());
+            playerServer[3].sendString("Top card in pile is: " + game.tCard.toString());
             playerServer[0].sendHand(h1);
             playerServer[1].sendHand(h2);
             playerServer[2].sendHand(h3);
             playerServer[3].sendHand(h4);
-            playerServer[0].sendRoundNo(roundNum);
-            playerServer[1].sendRoundNo(roundNum);
-            playerServer[2].sendRoundNo(roundNum);
-            playerServer[3].sendRoundNo(roundNum);
 
             game.setPickUpCard(pile.get(0));
 
             pile.remove(0);
 
-            System.out.println(game.tCard.toString());
 
-            //Send the Deck
-            playerServer[0].sendDeckPile(pile);
-            playerServer[1].sendDeckPile(pile);
-            playerServer[2].sendDeckPile(pile);
-            playerServer[3].sendDeckPile(pile);
+            while(true){
+                playerServer[0].sendRoundNo(roundID);
+                playerServer[1].sendRoundNo(roundID);
+                playerServer[2].sendRoundNo(roundID);
+                playerServer[3].sendRoundNo(roundID);
 
-            playerServer[0].sendCard(game.tCard);
-            playerServer[1].sendCard(game.tCard);
-            playerServer[2].sendCard(game.tCard);
-            playerServer[3].sendCard(game.tCard);
+                playerServer[0].sendCard(game.tCard);
+                playerServer[1].sendCard(game.tCard);
+                playerServer[2].sendCard(game.tCard);
+                playerServer[3].sendCard(game.tCard);
 
-            /*
-            playerServer[0].sendString("Current Turn: " + players[currentPlayerID].playerId + ", Next Player:  " + players[currentPlayerID++].playerId);
-            playerServer[1].sendString("Current Turn: " + players[currentPlayerID].playerId + ", Next Player:  " + players[currentPlayerID++].playerId);
-            playerServer[2].sendString("Current Turn: " + players[currentPlayerID].playerId + ", Next Player:  " + players[currentPlayerID++].playerId);
-            playerServer[3].sendString("Current Turn: " + players[currentPlayerID].playerId + ", Next Player:  " + players[currentPlayerID++].playerId);
+                //game.tCard = pile.get(0);
+                //System.out.println(game.tCard.toString());
 
-*/
+                System.out.println("Current Top Card: " + game.tCard.toString());
+                //Send the Deck
 
+                System.out.println(roundID);
+                playerServer[roundID-1].sendDeckPile(pile);
 
+                pile = playerServer[roundID-1].receiveDeck();
+                tCard = playerServer[roundID-1].receiveCard();
+                scores[roundID-1] += playerServer[roundID-1].receiveScore();
+                game.setPickUpCard(tCard);
+                System.out.println(tCard);
 
-            pickupPile = pile;
+                //Send all scores to each player
+                //Have player print them on player side before next round
 
-            pickupPile = playerServer[0].receiveDeck();
-            tCard = playerServer[0].receiveCard();
-            game.setPickUpCard(tCard);
+                for(int i=0;i<scores.length;i++){
+                    System.out.println("PLayer " + (i+1) + " score: "+ scores[i]);
+                }
 
+                //Go through scores, check if there is a winner
+                //print that winner
+                //flag to stop game
 
+                if(roundID == 4){
+                    roundID =1;
+                    continue;
+                }
+                roundID++;
 
-            //System.out.println(top);
-            //currentPlayerID = playerServer[0].receiveTurnID();
-            System.out.println(game.playerTurnID);
-            System.out.println(tCard);
-
-
+            }
 
         }
-
         catch (Exception e){
             System.out.println("ARGHHH");
             e.printStackTrace();
         }
-
-
     }
 
     public class Server implements Runnable {
@@ -343,19 +333,8 @@ public class GameServer implements Serializable {
         /*
          * receive scores of other players
          */
-        public int[] receiveScores() {
-            try {
-                int[] sc = new int[15];
-                for (int i = 0; i < 15; i++) {
-                    sc[i] = dIn.readInt();
-                }
-                return sc;
-            } catch (Exception e) {
-                System.out.println("Score sheet not received");
-                e.printStackTrace();
-            }
-            return null;
-        }
+
+
         public int receiveTurnID(){
             int id =0;
             try{
@@ -365,6 +344,16 @@ public class GameServer implements Serializable {
                 e.printStackTrace();
             }
             return id;
+        }
+        public int receiveScore(){
+            int score =0;
+            try{
+                score = dIn.readInt();
+                return score;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return score;
         }
 
         /*

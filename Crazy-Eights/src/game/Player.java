@@ -20,15 +20,15 @@ public class Player implements Serializable {
     private static final long serialVersionUID = 1L;
     public String name;
 
-    int playerId = 0;
+    int playerId = 1;
 
     Game game = new Game();
     private int[] scoreSheet = new int[15];
     int roundNum =0;
     ArrayList<Card> hand = new ArrayList<>();
     ArrayList<Card> deck = new ArrayList<>();
-
-    public Card tCard;
+    public int score = 0;
+    public Card tCard = game.tCard;
 
 
     static Client clientConnection;
@@ -48,54 +48,77 @@ public class Player implements Serializable {
         int turn =0;
         int count = 0; // reroll 3 times
         int end = 0;
+
         //game.printHand(dieRoll);
 
         while (end == 0) {
             System.out.println("Select an action: ");
-            if (count < 3) {
+            while (count < 3) {
                 System.out.println("(1) Choose a card to play from your hand (ie. 0,1,2,3...)");
                 System.out.println("(2) Draw a new card");
-            }
-            while (count < 3) {
+
+                System.out.print("Hand: ");
+                for(int i=0;i<userHand.size();i++){
+                    System.out.print(userHand.get(i).toString() +" ");
+                }
+                System.out.println();
                 int act = myObj.nextInt();
                 if (act == 1 && count < 3) {
+
                     System.out.println("Choose a card to play from 0-" + (userHand.size() - 1));
                     int c = myObj.nextInt();
-
-
                     if (game.checkCard(userHand.get(c))) {
                         game.setPickUpCard(userHand.get(c));
-                        tCard = userHand.get(c);
+                        score = game.scoreCard(userHand.get(c));
+                        System.out.println(score);
+                        System.out.println("Player played card: " + userHand.get(c));
                         userHand.remove(c);
+                        if(game.tCard.getValue() == 7){
+                            System.out.println("Change suit to: 0. C, 1. D, 2. H, 3. S");
+                            int suitSelection = myObj.nextInt();
+                            game.tCard.suit = suitSelection;
+                        }
+
                         break;
-                    } else {
+
+                    }
+                    else {
+                        System.out.println(game.tCard);
                         System.out.println("Error: Card Invalid");
                     }
-
-                    if (act == 2 && count < 3) {
-                        //System.out.println("Top card in pile is: " + deck.get(deck.size()-1))
-                        System.out.println("New Card has been drawn: " + deck.get(0).toString());
-                        userHand.add(deck.get(0));
-                        deck.remove(0);
-                        count++;
-                    }
                 }
-            }
+                if (act == 2 && count < 3) {
+                    //System.out.println("Top card in pile is: " + deck.get(deck.size()-1))
+                    System.out.println("New Card has been drawn: " + deck.get(0).toString());
+                    userHand.add(deck.get(0));
+                    deck.remove(0);
+                    count++;
+                }
+
+                if (act == 4){
+                    //Change top card
+                }
+                if (act == 5){
+                    //Insert card into hand
+                }
+                if (act == 6){
+                    //skip turn
+                }
+                if(act == 7){
+                    //empty hand??
+                }
 
 
-           end =1;
 
-
+            }end =1;
         }
-        playerId++;
-
-        game.setPlayerTurn(playerId);
-        game.playerTurnID = playerId;
+        System.out.print("Hand: ");
+        for(int i=0;i<userHand.size();i++){
+            System.out.print(userHand.get(i).toString() +" ");
+        }
+        System.out.println();
 
         return deck;
-
-
-
     }
 
     public int[] scoreRound(int r, int[] dieRoll) {
@@ -221,44 +244,38 @@ public class Player implements Serializable {
     public void startGame() throws IOException {
         // receive players once for names
         players = clientConnection.receivePlayer();
+        int nextID = game.getNextID();
+        String topCard = clientConnection.receiveString();
+        ArrayList<Card> h1 = clientConnection.receiveHand();
+
+
 
         while (true) {
-            String turn = clientConnection.receiveString();
-            String topCard = clientConnection.receiveString();
-            ArrayList<Card> h1 = clientConnection.receiveHand();
-            System.out.println(turn);
-
-            for(int i=0;i<h1.size();i++){
-                System.out.print(h1.get(i).toString() + ", ");
-            }
-
-
             int round = clientConnection.receiveRoundNo();
-            if (round == -1)
-                break;
             System.out.println("********Round Number " + round + "********");
-            ArrayList<Card> d = clientConnection.receiveDeck();
-            deck = d;
+
             tCard = clientConnection.receiveCard();
             game.setPickUpCard(tCard);
-            System.out.println("Top Card: " + game.tCard.toString());
-            //int[][] pl = clientConnection.receiveScores();
-            clientConnection.sendDeck(playRound(h1));
-            //turn = clientConnection.receiveString();
-            clientConnection.sendCard(game.tCard);
-            System.out.println(turn);
+            System.out.println("Top Card: " +tCard.toString());
+            if(round == this.playerId){
+                System.out.println("Player " + round + " is playing");
+                playerId++;
+                System.out.println("Player " + playerId + "'s turn is next" );
+                deck = clientConnection.receiveDeck();
+                clientConnection.sendDeck(playRound(h1));
+                clientConnection.sendCard(game.tCard);
+                clientConnection.sendScore(score);
+
+            }
+            if (round == -1)
+                break;
+
+            game.setPickUpCard(tCard);
 
 
 
         }
-
-
-
     }
-
-
-
-
     private class Client {
         Socket socket;
         private ObjectInputStream dIn;
@@ -457,6 +474,15 @@ public class Player implements Serializable {
                 e.printStackTrace();
             }
             return null;
+        }
+        public void sendScore(int s) {
+            try {
+                dOut.writeInt(s);
+                dOut.flush();
+            } catch (Exception e) {
+                System.out.println("Score sheet not received");
+                e.printStackTrace();
+            }
         }
 
         /*

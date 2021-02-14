@@ -10,60 +10,57 @@ import java.util.ArrayList;
 public class Game implements Serializable {
     public Card tCard = new Card(0,0);
 
-    public int playerTurnID;
+    public static int roundID =0;
     public int updatedSuit = 0;
-    int score = 0;
+
     Player[] players;
 
-    public int score8s(Card c){
-        if(c.getValue() == 8){
-            score = score -50;
-            return score;
-        }
-        return score;
-    }
-
-    public int scoreHighCard(Card c){
-        if(c.toString().contains("K") || c.toString().contains("Q") || c.toString().contains("J")){
-            score = score - 10;
-            return score;
-        }
-        return score;
-    }
-
     public int scoreCard(Card c){
-        if(c.getValue() >= 1 && c.getValue() <= 10){
-            score = score - c.getValue();
+        int score = 0;
+        if((c.getValue() >= 0 && c.getValue() <= 9) &&  c.getValue() != 7 ){
+            score = score + c.getValue() + 1;
             return score;
+        }
+        if(c.getValue() == 7){
+            score += 50;
+        }
+        if(c.getValue() >9){
+            score += 10;
         }
         return score;
     }
 
-    public int scorePlayedCards(ArrayList<Card> played){
-        return 0;
-    }
+
 
     public void setPlayerTurn(int id){
-        this.playerTurnID = id;
+        roundID = id;
     }
 
     public boolean checkCard(Card c){
-
-        System.out.println(tCard.toString());
         //Check if the card
-
         if(c.getSuit() == tCard.getSuit() || c.getValue() == tCard.getValue()){
             return true;
         }
-        if(tCard.getValue() == 8){
+        if(c.getValue() == 7){
             //suit change
             return true;
-        }else{
-            return false;
         }
+       return false;
     }
     public void setPickUpCard(Card c){
         this.tCard = c;
+    }
+
+    public int getNextID(){
+        if(tCard.getValue() == 0 ) {
+            roundID = roundID - 1;
+        }
+
+        return roundID;
+    }
+
+    public Card changeSuit(int s){
+        return new Card(s,7);
     }
 
 
