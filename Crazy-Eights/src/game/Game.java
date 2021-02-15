@@ -248,8 +248,23 @@ public class Game implements Serializable {
 
     }
 
+    public ArrayList<Card> rigHandsPartTwosCard(int index){
+        ArrayList<Card> moddedHand = new ArrayList<>();
+
+        if(index == 1){
+            moddedHand.add(new Card(2,2));
+        }
+
+        return moddedHand;
+
+
+
+
+    }
+
     public ArrayList<Card> rigDeckPart3(){
         ArrayList<Card> moddedDeck = new ArrayList<>();
+        moddedDeck.add(new Card(0,0));
 
         moddedDeck.add(new Card(0,1));
         moddedDeck.add(new Card(0,2));
@@ -261,13 +276,12 @@ public class Game implements Serializable {
         moddedDeck.add(new Card(0,0));
         moddedDeck.add(new Card(0,0));
 
-
-
         return moddedDeck;
     }
 
     public ArrayList<Card> rigDeckPart32(){
         ArrayList<Card> moddedDeck = new ArrayList<>();
+        moddedDeck.add(new Card(0,0));
 
         moddedDeck.add(new Card(3,12));
         moddedDeck.add(new Card(3,11));
@@ -285,7 +299,7 @@ public class Game implements Serializable {
 
     public ArrayList<Card> rigDeckPart2(){
         ArrayList<Card> moddedDeck = new ArrayList<>();
-
+        moddedDeck.add(new Card(0,0));
         moddedDeck.add(new Card(0,5));
         moddedDeck.add(new Card(1,8));
         moddedDeck.add(new Card(2,8));
@@ -301,6 +315,24 @@ public class Game implements Serializable {
 
         return moddedDeck;
     }
+    public ArrayList<Card> rigDeckPartDraw(){
+        ArrayList<Card> moddedDeck = new ArrayList<>();
+        moddedDeck.add(new Card(0,6));
+        moddedDeck.add(new Card(0,5));
+        moddedDeck.add(new Card(1,5));
+        moddedDeck.add(new Card(0,4));
+        moddedDeck.add(new Card(3,4));
+        moddedDeck.add(new Card(2,6));
+        moddedDeck.add(new Card(2,3));
+        moddedDeck.add(new Card(2,7));
+        moddedDeck.add(new Card(0,5));
+
+
+        return moddedDeck;
+    }
+
+
+
 
 
 

@@ -138,12 +138,14 @@ public class GameServer implements Serializable {
             pile.remove(0);
         }
         try {
+
             playerServer[0].sendPlayers(players);
             playerServer[1].sendPlayers(players);
             playerServer[2].sendPlayers(players);
             playerServer[3].sendPlayers(players);
 
             //Part 1 Hand
+            /*
 
             playerServer[0].sendHand(game.rigHandPart1(1));
             playerServer[1].sendHand(game.rigHandPart1(2));
@@ -151,58 +153,53 @@ public class GameServer implements Serializable {
             playerServer[3].sendHand(game.rigHandPart1(4));
 
             pile = game.rigDeckPart1();
-
-            //Part 2 Hands
-            /*
-            playerServer[0].sendHand(game.rigHandPart2(1));
-            playerServer[1].sendHand(game.rigHandPart2(2));
-            playerServer[2].sendHand(game.rigHandPart2(3));
-            playerServer[3].sendHand(game.rigHandPart2(4));
             */
 
-              /*
-            PArt 2 Deck
-            pile = game.rigDeckPart2()
-             */
+            //Part 2 Hands
+
+          //  playerServer[0].sendHand(game.rigHandsPartTwosCard(1));
+          //  playerServer[1].sendHand(game.rigHandsPartTwosCard(2));
+          //  playerServer[2].sendHand(game.rigHandsPartTwosCard(3));
+          //  playerServer[3].sendHand(game.rigHandsPartTwosCard(4));
+
+
+
+            //PArt 2 Deck
+           //pile = game.rigDeckPartDraw();
+
+
 
 
 
             /*
-            PArt 3.1 Deck
-            pile = game.rigDeckPart3()
-             */
 
-            /*
-            Part 3.1 hands
             playerServer[0].sendHand(game.rigHands3(1));
             playerServer[1].sendHand(game.rigHands3(2));
             playerServer[2].sendHand(game.rigHands3(3));
             playerServer[3].sendHand(game.rigHands3(4));
 
-             */
+
+            pile = game.rigDeckPart3();
+               */
+
+
+
 
             /*
-            PArt 3.2 Deck
-            pile = game.rigDeckPart32()
-             */
-
-            /*
-            Part 3.2 Hands
-             playerServer[0].sendHand(game.rigHands32(1));
-            playerServer[1].sendHand(game.rigHands3(2));
-            playerServer[2].sendHand(game.rigHands3(3));
-            playerServer[3].sendHand(game.rigHands3(4));
-
-
+            playerServer[0].sendHand(game.rigHandsPart32(1));
+            playerServer[1].sendHand(game.rigHandsPart32(2));
+            playerServer[2].sendHand(game.rigHandsPart32(3));
+            playerServer[3].sendHand(game.rigHandsPart32(4));
+            pile = game.rigDeckPart32();
             */
 
-            /*
-            Random Hands (Normal Game)
+
+
             playerServer[0].sendHand(h1);
             playerServer[1].sendHand(h2);
             playerServer[2].sendHand(h3);
             playerServer[3].sendHand(h4);
-            */
+
             game.setPickUpCard(pile.get(0));
 
             pile.remove(0);
