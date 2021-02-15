@@ -213,6 +213,98 @@ public class Game implements Serializable {
         return moddedHand;
     }
 
+    public ArrayList<Card> rigHandsPart32(int index){
+        ArrayList<Card> moddedHand = new ArrayList<>();
+
+        if(index == 1){
+            moddedHand.add(new Card(1,6));
+            moddedHand.add(new Card(3,3));
+            moddedHand.add(new Card(0,6));
+            moddedHand.add(new Card(2,3));
+            moddedHand.add(new Card(1,4));
+        }
+        if(index == 2){
+            moddedHand.add(new Card(1,8));
+            moddedHand.add(new Card(3,2));
+            moddedHand.add(new Card(0,8));
+            moddedHand.add(new Card(2,2));
+            moddedHand.add(new Card(0,10));
+        }
+        if(index==3){
+            moddedHand.add(new Card(1,2));
+            moddedHand.add(new Card(3,8));
+            moddedHand.add(new Card(0,2));
+            moddedHand.add(new Card(2,8));
+            moddedHand.add(new Card(2,4));
+        }
+        if(index == 4){
+            moddedHand.add(new Card(1,3));
+            moddedHand.add(new Card(3,6));
+            moddedHand.add(new Card(0,3));
+            moddedHand.add(new Card(3,4));
+            moddedHand.add(new Card(1,7));
+        }
+        return moddedHand;
+
+    }
+
+    public ArrayList<Card> rigDeckPart3(){
+        ArrayList<Card> moddedDeck = new ArrayList<>();
+
+        moddedDeck.add(new Card(0,1));
+        moddedDeck.add(new Card(0,2));
+        moddedDeck.add(new Card(0,2));
+        moddedDeck.add(new Card(0,9));
+        moddedDeck.add(new Card(0,10));
+        moddedDeck.add(new Card(0,6));
+        moddedDeck.add(new Card(0,0));
+        moddedDeck.add(new Card(0,0));
+        moddedDeck.add(new Card(0,0));
+
+
+
+        return moddedDeck;
+    }
+
+    public ArrayList<Card> rigDeckPart32(){
+        ArrayList<Card> moddedDeck = new ArrayList<>();
+
+        moddedDeck.add(new Card(3,12));
+        moddedDeck.add(new Card(3,11));
+        moddedDeck.add(new Card(2,12));
+        moddedDeck.add(new Card(1,5));
+        moddedDeck.add(new Card(1,11));
+        moddedDeck.add(new Card(1,10));
+        moddedDeck.add(new Card(1,9));
+
+
+
+        return moddedDeck;
+    }
+
+
+    public ArrayList<Card> rigDeckPart2(){
+        ArrayList<Card> moddedDeck = new ArrayList<>();
+
+        moddedDeck.add(new Card(0,5));
+        moddedDeck.add(new Card(1,8));
+        moddedDeck.add(new Card(2,8));
+        moddedDeck.add(new Card(0,5));
+        moddedDeck.add(new Card(3,6));
+        moddedDeck.add(new Card(2,4));
+        moddedDeck.add(new Card(2,1));
+        moddedDeck.add(new Card(3,4));
+        moddedDeck.add(new Card(1,5));
+        moddedDeck.add(new Card(2,5));
+        moddedDeck.add(new Card(0,6));
+
+
+        return moddedDeck;
+    }
+
+
+
+
 
 
 
