@@ -143,19 +143,40 @@ public class GameServer implements Serializable {
             playerServer[2].sendPlayers(players);
             playerServer[3].sendPlayers(players);
 
-           /*
+            //Part 1 Hand
+            /*
+            playerServer[0].sendHand(game.rigHandPart1(1));
+            playerServer[1].sendHand(game.rigHandPart1(2));
+            playerServer[2].sendHand(game.rigHandPart1(3));
+            playerServer[3].sendHand(game.rigHandPart1(4));
+            */
+
+
+
+            //Part 2 Hands
+            playerServer[0].sendHand(game.rigHandPart2(1));
+            playerServer[1].sendHand(game.rigHandPart2(2));
+            playerServer[2].sendHand(game.rigHandPart2(3));
+            playerServer[3].sendHand(game.rigHandPart2(4));
+
+
+
+            /*
+            Part 3 hands
             playerServer[0].sendHand(game.rigHands3(1));
             playerServer[1].sendHand(game.rigHands3(2));
             playerServer[2].sendHand(game.rigHands3(3));
             playerServer[3].sendHand(game.rigHands3(4));
 
-            */
+             */
 
+            /*
+            Random Hands (Normal Game)
             playerServer[0].sendHand(h1);
             playerServer[1].sendHand(h2);
             playerServer[2].sendHand(h3);
             playerServer[3].sendHand(h4);
-
+            */
             game.setPickUpCard(pile.get(0));
 
             pile.remove(0);
@@ -279,9 +300,6 @@ public class GameServer implements Serializable {
 
 
             }
-
-
-
 
         }
         catch (Exception e){

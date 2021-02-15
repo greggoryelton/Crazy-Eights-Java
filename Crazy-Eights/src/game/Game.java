@@ -15,23 +15,22 @@ public class Game implements Serializable {
 
     Player[] players;
 
-    public int scoreCard(Card c){
+    public int scoreHand(ArrayList<Card> hand){
         int score = 0;
-        if((c.getValue() >= 0 && c.getValue() <= 9) &&  c.getValue() != 7 ){
-            score = score + c.getValue() + 1;
-            return score;
-        }
-        if(c.getValue() == 7){
-            score += 50;
-        }
-        if(c.getValue() >9){
-            score += 10;
+
+        for(int i=0;i<hand.size();i++){
+            if((hand.get(i).getValue() >= 0 && hand.get(i).getValue() <= 9) &&  hand.get(i).getValue() != 7 ){
+                score = score + hand.get(i).getValue() + 1;
+            }
+            if(hand.get(i).getValue() == 7){
+                score += 50;
+            }
+            if(hand.get(i).getValue() >9){
+                score += 10;
+            }
         }
         return score;
     }
-
-
-
     public void setPlayerTurn(int id){
         roundID = id;
     }
@@ -86,6 +85,19 @@ public class Game implements Serializable {
         return index;
     }
 
+    public boolean hasTwoPlayable(ArrayList<Card> hand){
+        int numPlayable = 0;
+        for(int i=0;i<hand.size();i++){
+            if(checkCard(hand.get(i))){
+                numPlayable++;
+            }
+        }
+        if(numPlayable >= 2){
+            return true;
+        }
+        return false;
+    }
+
     public ArrayList<Card> rigHands3(int playerID){
         ArrayList<Card> moddedHand = new ArrayList<>();
 
@@ -121,9 +133,93 @@ public class Game implements Serializable {
 
     }
 
+    public ArrayList<Card> rigHandPart1(int index){
+        ArrayList<Card> moddedHand = new ArrayList<>();
+        if(index == 1) {
+            moddedHand.add(new Card(0, 2));
+            moddedHand.add(new Card(2, 0));
+            moddedHand.add(new Card(0, 11));
+            moddedHand.add(new Card(2, 0));
+            moddedHand.add(new Card(0,0));
+        }
+        if(index == 2){
+            moddedHand.add(new Card(0,0));
+            moddedHand.add(new Card(0,0));
+            moddedHand.add(new Card(0,0));
+            moddedHand.add(new Card(0,0));
+            moddedHand.add(new Card(0,0));
+        }
+        if(index == 3){
+            moddedHand.add(new Card(2,6));
+            moddedHand.add(new Card(0,0));
+            moddedHand.add(new Card(0,0));
+            moddedHand.add(new Card(0,0));
+            moddedHand.add(new Card(0,0));
+        }
+        if(index == 4){
+            moddedHand.add(new Card(2,6));
+            moddedHand.add(new Card(0,0));
+            moddedHand.add(new Card(0,0));
+            moddedHand.add(new Card(0,0));
+            moddedHand.add(new Card(0,0));
+        }
+        return moddedHand;
+    }
 
 
-    public boolean isGameFinished(int[] scores){
+    public ArrayList<Card> rigDeckPart1(){
+        ArrayList<Card> moddedDeck = new ArrayList<>();
+
+        moddedDeck.add(new Card(0,12));
+        moddedDeck.add(new Card(2,12));
+        moddedDeck.add(new Card(0,6));
+        moddedDeck.add(new Card(2,7));
+        moddedDeck.add(new Card(3,4));
+        moddedDeck.add(new Card(0,0));
+        moddedDeck.add(new Card(0,0));
+        moddedDeck.add(new Card(0,0));
+        moddedDeck.add(new Card(0,0));
+        moddedDeck.add(new Card(0,0));
+        moddedDeck.add(new Card(0,0));
+        moddedDeck.add(new Card(0,0));
+        moddedDeck.add(new Card(0,0));
+        moddedDeck.add(new Card(0,0));
+        return moddedDeck;
+    }
+    public ArrayList<Card> rigHandPart2(int index) {
+        ArrayList<Card> moddedHand = new ArrayList<>();
+        tCard = new Card(3,5);
+        if(index==1){
+            moddedHand.add(new Card(3,0));
+            moddedHand.add(new Card(3,2));
+        }
+        if(index ==2){
+            moddedHand.add(new Card(3,1));
+        }
+        if(index == 3){
+            moddedHand.add(new Card(2,7));
+            moddedHand.add(new Card(2,10));
+            moddedHand.add(new Card(2,5));
+            moddedHand.add(new Card(2,12));
+            moddedHand.add(new Card(3,12));
+            moddedHand.add(new Card(3, 6));
+        }
+        if(index == 4){
+            moddedHand.add(new Card(0,7));
+            moddedHand.add(new Card(1,7));
+            moddedHand.add(new Card(1,1));
+            moddedHand.add(new Card(3,4));
+        }
+        return moddedHand;
+    }
+
+
+
+
+
+
+
+        public boolean isGameFinished(int[] scores){
         for(int i=0;i<scores.length;i++){
             if(scores[i] >= 100){
                 return true;

@@ -53,6 +53,13 @@ public class Player implements Serializable {
         //game.printHand(dieRoll);
 
         while (end == 0) {
+            if(game.tCard.getValue() == 1 && (!game.hasTwoPlayable(userHand))){
+                userHand.add(deck.get(deck.size()-1));
+                deck.remove(deck.size()-1);
+                userHand.add(deck.get(deck.size()-1));
+                deck.remove(deck.size()-1);
+                System.out.println("A 2 has been played. You have picked up two cards from the deck.");
+            }
             System.out.println("Select an action: ");
             while (count < 3) {
                 System.out.println("(1) Choose a card to play from your hand (ie. 0,1,2,3...)");
@@ -69,10 +76,9 @@ public class Player implements Serializable {
                     int c = myObj.nextInt();
                     if (game.checkCard(userHand.get(c))) {
                         game.setPickUpCard(userHand.get(c));
-                        score = game.scoreCard(userHand.get(c));
-                        System.out.println(score);
                         System.out.println("Player played card: " + userHand.get(c));
                         userHand.remove(c);
+
                         if(game.tCard.getValue() == 7){
                             System.out.println("Change suit to: 0. C, 1. D, 2. H, 3. S");
                             int suitSelection = myObj.nextInt();
@@ -86,10 +92,6 @@ public class Player implements Serializable {
                             }
 
                         }
-                        if(game.tCard.getValue() == 1){
-
-                        }
-
                         break;
 
                     }
@@ -111,6 +113,8 @@ public class Player implements Serializable {
                     System.out.println("(4) Set top card");
                     System.out.println("(5) Add card to hand");
                     System.out.println("(6) Empty current hand");
+                    System.out.println("(7) Skip current turn");
+                    System.out.println();
                 }
 
                 if (act == 4){
@@ -133,24 +137,31 @@ public class Player implements Serializable {
                     userHand.add(new Card(s, v));
                     System.out.println("Card: " + userHand.get(userHand.size()-1) + " has been added to hand.");
                         //userHand = moddedHand;
-
                 }
                 if(act == 6){
                     //Clear hand
                     System.out.println("Hand has been emptied");
                     ArrayList<Card> emptyHand = new ArrayList<>();
                     userHand = emptyHand;
-
-
                 }
-
-                //ADD IN DIRECTION OF PLAYERS
-
+                if(act == 7){
+                    System.out.println("Skipping current turn");
+                    break;
+                }
+                if(act == 8){
+                    //Rigs hand for part 1 testing
+                    userHand = game.rigHandPart1(playerId);
+                }
+                if(act == 9){
+                    //swap deck with rigged deck
+                    deck = game.rigDeckPart1();
+                }
             }end =1;
         }
 
         System.out.println();
-
+        score = game.scoreHand(userHand);
+        System.out.println(score);
         return deck;
     }
 
@@ -342,6 +353,10 @@ public class Player implements Serializable {
 
             if (round == -1)
                 break;
+
+            if(h1.isEmpty()){
+                end = true;
+            }
 
             game.setPickUpCard(tCard);
 
