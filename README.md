@@ -1,7 +1,3 @@
-# COMP3004-A2
-Greggory Elton 
-<br>
-Student Number: 101038024
-<br>
-Assignment #2 - Crazy Eights
+Simple Crazy Eights Java game
 
+Contains an example of the card game that is "networked" allowing for multiple players. 
