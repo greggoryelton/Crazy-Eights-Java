@@ -144,8 +144,7 @@ public class GameServer implements Serializable {
             playerServer[2].sendPlayers(players);
             playerServer[3].sendPlayers(players);
 
-            //Part 1 Hand
-            /*
+           
 
             playerServer[0].sendHand(game.rigHandPart1(1));
             playerServer[1].sendHand(game.rigHandPart1(2));
@@ -153,25 +152,25 @@ public class GameServer implements Serializable {
             playerServer[3].sendHand(game.rigHandPart1(4));
 
             pile = game.rigDeckPart1();
-            */
+           
 
-            //Part 2 Hands
+          
 
-          //  playerServer[0].sendHand(game.rigHandsPartTwosCard(1));
-          //  playerServer[1].sendHand(game.rigHandsPartTwosCard(2));
-          //  playerServer[2].sendHand(game.rigHandsPartTwosCard(3));
-          //  playerServer[3].sendHand(game.rigHandsPartTwosCard(4));
-
-
-
-            //PArt 2 Deck
-           //pile = game.rigDeckPartDraw();
+            playerServer[0].sendHand(game.rigHandsPartTwosCard(1));
+            playerServer[1].sendHand(game.rigHandsPartTwosCard(2));
+            playerServer[2].sendHand(game.rigHandsPartTwosCard(3));
+            playerServer[3].sendHand(game.rigHandsPartTwosCard(4));
 
 
 
+        
+            pile = game.rigDeckPartDraw();
 
 
-            /*
+
+
+
+            
 
             playerServer[0].sendHand(game.rigHands3(1));
             playerServer[1].sendHand(game.rigHands3(2));
@@ -180,18 +179,18 @@ public class GameServer implements Serializable {
 
 
             pile = game.rigDeckPart3();
-               */
+               
 
 
 
 
-            /*
+            
             playerServer[0].sendHand(game.rigHandsPart32(1));
             playerServer[1].sendHand(game.rigHandsPart32(2));
             playerServer[2].sendHand(game.rigHandsPart32(3));
             playerServer[3].sendHand(game.rigHandsPart32(4));
             pile = game.rigDeckPart32();
-            */
+            
 
 
 
@@ -509,7 +508,7 @@ public class GameServer implements Serializable {
          * send scores of other players
          */
         public void sendScores(int[] pl) {
-            /*
+            
             try {
                 for (int i = 0; i < pl.length; i++) {
                     for (int j = 0; j < pl[i].getScoreSheet().length; j++) {
@@ -522,7 +521,7 @@ public class GameServer implements Serializable {
                 e.printStackTrace();
             }
 
-             */
+             
         }
 
 
